@@ -1,0 +1,39 @@
+# Données. Les sources brutes ne sont jamais versionnées, les jeux dérivés non plus :
+# ils se régénèrent en exécutant les notebooks 01 à 04 dans l'ordre.
+data/raw/*
+data/interim/*
+data/processed/*
+!data/*/.gitkeep
+
+# Modèles entraînés, régénérés par le notebook 07
+models/*.joblib
+
+# Artefacts Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environnements virtuels et variables locales
+.venv/
+venv/
+env/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Configuration locale des outils, propre à une machine et non au projet
+.claude/
+.vscode/
+.idea/
+
+# Fichiers temporaires d'Excel sur le référentiel des ligues
+~$*.xlsx
+
+# Systèmes de fichiers
+.DS_Store
+Thumbs.db
+desktop.ini

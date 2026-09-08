@@ -1,0 +1,292 @@
+{
+  "phase": 3,
+  "notebook": "notebooks/03_nettoyage.ipynb",
+  "source": "data/raw/*_LoL_esports_match_data_from_OraclesElixir.csv",
+  "sortie": [
+    "data/interim/equipes_interim.parquet",
+    "data/interim/joueurs_interim.parquet"
+  ],
+  "regle_imputation": "Aucune imputation statistique. Suppression, drapeau et valeur constante uniquement. L'imputation aura lieu dans le Pipeline de la phase 7, ajusté sur le seul jeu d'entraînement",
+  "etat_initial": {
+    "lignes": 104544,
+    "colonnes": 165,
+    "parties": 52272,
+    "valeurs_manquantes": 2782881,
+    "doublons_exacts": 0
+  },
+  "etat_final": {
+    "lignes": 92616,
+    "colonnes": 66,
+    "parties": 46308,
+    "valeurs_manquantes": 52703,
+    "doublons_exacts": 0
+  },
+  "colonnes_supprimees": {
+    "vides_a_100_pct": [
+      "playername",
+      "playerid",
+      "champion",
+      "firstbloodkill",
+      "firstbloodassist",
+      "firstbloodvictim",
+      "damageshare",
+      "earnedgoldshare",
+      "total cs"
+    ],
+    "posterieures_a_15_min": [
+      "kills",
+      "deaths",
+      "assists",
+      "teamkills",
+      "teamdeaths",
+      "doublekills",
+      "triplekills",
+      "quadrakills",
+      "pentakills",
+      "totalgold",
+      "earnedgold",
+      "earned gpm",
+      "earnedgoldshare",
+      "goldspent",
+      "gspd",
+      "gpr",
+      "total cs",
+      "minionkills",
+      "monsterkills",
+      "monsterkillsownjungle",
+      "monsterkillsenemyjungle",
+      "cspm",
+      "damagetochampions",
+      "dpm",
+      "damageshare",
+      "damagetakenperminute",
+      "damagemitigatedperminute",
+      "wardsplaced",
+      "wpm",
+      "wardskilled",
+      "wcpm",
+      "controlwardsbought",
+      "visionscore",
+      "vspm",
+      "firstbaron",
+      "barons",
+      "opp_barons",
+      "elders",
+      "opp_elders",
+      "firstmidtower",
+      "firsttothreetowers",
+      "inhibitors",
+      "opp_inhibitors",
+      "towers",
+      "opp_towers",
+      "dragons",
+      "opp_dragons",
+      "dragons (type unknown)",
+      "infernals",
+      "mountains",
+      "clouds",
+      "oceans",
+      "chemtechs",
+      "hextechs",
+      "heralds",
+      "opp_heralds",
+      "void_grubs",
+      "opp_void_grubs",
+      "atakhans",
+      "opp_atakhans",
+      "damagetotowers",
+      "team kpm",
+      "elementaldrakes",
+      "opp_elementaldrakes",
+      "ckpm",
+      "firsttower",
+      "gamelength",
+      "goldat20",
+      "xpat20",
+      "csat20",
+      "opp_goldat20",
+      "opp_xpat20",
+      "opp_csat20",
+      "golddiffat20",
+      "xpdiffat20",
+      "csdiffat20",
+      "killsat20",
+      "assistsat20",
+      "deathsat20",
+      "opp_killsat20",
+      "opp_assistsat20",
+      "opp_deathsat20",
+      "goldat25",
+      "xpat25",
+      "csat25",
+      "opp_goldat25",
+      "opp_xpat25",
+      "opp_csat25",
+      "golddiffat25",
+      "xpdiffat25",
+      "csdiffat25",
+      "killsat25",
+      "assistsat25",
+      "deathsat25",
+      "opp_killsat25",
+      "opp_assistsat25",
+      "opp_deathsat25"
+    ],
+    "metadonnees": [
+      "url",
+      "participantid"
+    ]
+  },
+  "transformations": [
+    {
+      "num": 1,
+      "colonne": "toutes",
+      "probleme": "Doublons exacts",
+      "action": "Aucune suppression nécessaire",
+      "lignes_affectees": 0,
+      "colonnes_supprimees": 0,
+      "lignes_restantes": 104544,
+      "justification": "Aucun doublon exact ni doublon de clé sur les lignes à clé renseignée, vérifié plutôt que supposé"
+    },
+    {
+      "num": 2,
+      "colonne": "result",
+      "probleme": "Partie sans vainqueur, result à 0 des deux côtés",
+      "action": "Suppression des parties entières, par paires",
+      "lignes_affectees": 6,
+      "colonnes_supprimees": 0,
+      "lignes_restantes": 104538,
+      "justification": "Cible inexistante, lignes inutilisables en apprentissage supervisé. Suppression par paires pour préserver l'équilibre 50/50"
+    },
+    {
+      "num": 3,
+      "colonne": "105 colonnes",
+      "probleme": "Information postérieure à l'instant de prédiction",
+      "action": "Suppression de colonnes",
+      "lignes_affectees": 0,
+      "colonnes_supprimees": 105,
+      "lignes_restantes": 104538,
+      "justification": "Colonnes de fin de partie contenant le résultat, colonnes de ligne joueur vides sur les lignes équipe, et métadonnées sans valeur prédictive"
+    },
+    {
+      "num": 4,
+      "colonne": "playoffs, firstblood, firstdragon, firstherald, result",
+      "probleme": "Booléens stockés en flottant",
+      "action": "Conversion en entier nullable Int64, et result en int8",
+      "lignes_affectees": 0,
+      "colonnes_supprimees": 0,
+      "lignes_restantes": 104538,
+      "justification": "Int64 accepte les valeurs manquantes sans les remplacer, contrairement à int. Aucune imputation n'est donc introduite par la conversion"
+    },
+    {
+      "num": 5,
+      "colonne": "teamname",
+      "probleme": "Espaces superflus en bordure",
+      "action": "Suppression des espaces de bordure, casse laissée intacte",
+      "lignes_affectees": 0,
+      "colonnes_supprimees": 0,
+      "lignes_restantes": 104538,
+      "justification": "Abaisser la casse fusionnerait des organisations distinctes. teamname ne sera de toute façon jamais une feature, il sert aux variables de forme"
+    },
+    {
+      "num": 6,
+      "colonne": "saison",
+      "probleme": "year est une étiquette de saison, pas une année civile",
+      "action": "Création de saison à partir de l'année de la date",
+      "lignes_affectees": 0,
+      "colonnes_supprimees": 0,
+      "lignes_restantes": 104538,
+      "justification": "Garantit un découpage strictement chronologique et n'abandonne aucune ligne hors du train comme du test. year est conservée pour l'analyse"
+    },
+    {
+      "num": 7,
+      "colonne": "region, tier_ligue, franchisee, confiance",
+      "probleme": "league ne survit pas à la réorganisation du circuit en 2025",
+      "action": "Jointure du référentiel des ligues, validate=many_to_one",
+      "lignes_affectees": 0,
+      "colonnes_supprimees": 0,
+      "lignes_restantes": 104538,
+      "justification": "region et tier_ligue sont stables dans le temps et remplacent league comme features. La validation empêche toute duplication silencieuse"
+    },
+    {
+      "num": 8,
+      "colonne": "goldat15, xpat15, csat15, golddiffat15, xpdiffat15",
+      "probleme": "Snapshot à 15 minutes absent",
+      "action": "Suppression des parties entières dont une des deux lignes est incomplète",
+      "lignes_affectees": 11922,
+      "colonnes_supprimees": 0,
+      "lignes_restantes": 92616,
+      "justification": "Critère mesuré, et non un nom de ligue. Suppression par paires pour préserver l'équilibre 50/50 de la cible. Aucune imputation"
+    },
+    {
+      "num": 9,
+      "colonne": "split, teamname, teamid",
+      "probleme": "Catégories manquantes",
+      "action": "Valeur constante explicite 'Inconnu'",
+      "lignes_affectees": 0,
+      "colonnes_supprimees": 0,
+      "lignes_restantes": 92616,
+      "justification": "Le guide interdit l'imputation par le mode. 'Inconnu' conserve l'information de l'absence au lieu d'inventer une modalité plausible"
+    },
+    {
+      "num": 10,
+      "colonne": "golddiffat15",
+      "probleme": "Valeurs extrêmes détectées par l'IQR",
+      "action": "Drapeau flag_ecart_or_extreme, aucune ligne supprimée ni modifiée",
+      "lignes_affectees": 0,
+      "colonnes_supprimees": 0,
+      "lignes_restantes": 92616,
+      "justification": "Vraies parties déséquilibrées, pas des erreurs. Les supprimer retirerait les parties les plus prévisibles. La winsorization est interdite à ce stade"
+    }
+  ],
+  "controles_validation": [
+    {
+      "controle": "Aucun doublon exact",
+      "statut": "ok"
+    },
+    {
+      "controle": "Deux lignes équipe par partie, sans exception",
+      "statut": "ok"
+    },
+    {
+      "controle": "Un vainqueur unique par partie",
+      "statut": "ok"
+    },
+    {
+      "controle": "Cible parfaitement équilibrée",
+      "statut": "ok"
+    },
+    {
+      "controle": "Aucune valeur manquante sur les colonnes requises à 15 minutes",
+      "statut": "ok"
+    },
+    {
+      "controle": "Aucune colonne de fuite résiduelle",
+      "statut": "ok"
+    },
+    {
+      "controle": "Aucune corrélation au-dessus du plafond golddiffat15",
+      "statut": "ok"
+    },
+    {
+      "controle": "region et tier_ligue entièrement renseignées",
+      "statut": "ok"
+    },
+    {
+      "controle": "Dates toujours au bon type",
+      "statut": "ok"
+    },
+    {
+      "controle": "patch toujours en texte",
+      "statut": "ok"
+    },
+    {
+      "controle": "Données originales intactes",
+      "statut": "ok"
+    },
+    {
+      "controle": "Aucune imputation statistique réalisée",
+      "statut": "ok"
+    }
+  ]
+}

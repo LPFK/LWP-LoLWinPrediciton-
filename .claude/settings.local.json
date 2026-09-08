@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npx skillfish add pluginagentmarketplace/custom-plugin-machine-learning ml-fundamentals; npx skillfish add bbgnsurftech/claude-skills-collection ml-model-trainer)"
+    ]
+  }
+}
