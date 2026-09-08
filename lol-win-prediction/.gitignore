@@ -25,12 +25,6 @@ env/
 # Jupyter
 .ipynb_checkpoints/
 
-# Configuration locale des outils, propre à une machine et non au projet
-.claude/
-.vscode/
-.idea/
-CLAUDE.md
-docs/journal_ia.md
 
 # Fichiers temporaires d'Excel sur le référentiel des ligues
 ~$*.xlsx
