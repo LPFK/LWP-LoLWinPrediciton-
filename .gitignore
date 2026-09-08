@@ -1,0 +1,23 @@
+# Outillage local, conservé sur la machine et hors du dépôt
+.claude/
+CLAUDE.md
+lol-win-prediction/CLAUDE.md
+lol-win-prediction/docs/journal_ia.md
+
+# Artefacts Python
+__pycache__/
+*.py[cod]
+
+# Environnements virtuels
+.venv/
+venv/
+env/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Systèmes de fichiers
+.DS_Store
+Thumbs.db
+desktop.ini

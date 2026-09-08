@@ -29,6 +29,8 @@ env/
 .claude/
 .vscode/
 .idea/
+CLAUDE.md
+docs/journal_ia.md
 
 # Fichiers temporaires d'Excel sur le référentiel des ligues
 ~$*.xlsx
