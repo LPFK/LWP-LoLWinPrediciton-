@@ -192,4 +192,3 @@ Sans cette précaution, `OneHotEncoder(handle_unknown="ignore")` encoderait chaq
 - [x] 3 sources identifiées, 3 formats différents (CSV, JSON, XLSX)
 - [x] Volume vérifié (bien au-dessus de 10 000 lignes)
 - [x] Risque de fuite de données identifié et stratégie définie
-- [ ] **Dataset validé par le formateur**

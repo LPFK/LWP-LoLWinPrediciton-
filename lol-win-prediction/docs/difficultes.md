@@ -3,10 +3,6 @@
 Suivi transversal du projet, tenu au fil des phases. Deux parties : ce qui a été rencontré et
 résolu, et ce qui reste ouvert et doit être surveillé jusqu'à la soutenance.
 
-Ce document sert deux usages. Il évite de reperdre du temps sur un problème déjà tranché, et il
-fournit les réponses aux questions de type « pourquoi avoir fait ce choix » que la soutenance
-posera.
-
 ---
 
 ## Partie 1 : difficultés rencontrées et résolues

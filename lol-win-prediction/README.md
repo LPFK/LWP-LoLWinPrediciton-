@@ -46,7 +46,7 @@ CLAUDE.md         brief projet pour Claude Code
 
 | Phase | Notebook | Livrable | Points | Statut |
 |---|---|---|---|---|
-| 0 Cadrage | — | `docs/00_cadrage.md` | 6 | Rédigé, à faire valider |
+| 0 Cadrage | — | `docs/00_cadrage.md` | 6 | FAIT |
 | 1 Extraction | `01_extraction.ipynb` | 3 sources chargées | 4 | Fait, exécuté de bout en bout sur 104 544 lignes équipe |
 | 2 Diagnostic | `02_eda_diagnostique.ipynb` | `docs/rapport_diagnostic.md` | 8 | Fait, 5 dimensions notées, score global 3,4 / 5 |
 | 3 Nettoyage | `03_nettoyage.ipynb` | `docs/rapport_nettoyage.md` | 12 | Fait, 92 616 lignes et 66 colonnes en sortie |
@@ -56,7 +56,7 @@ CLAUDE.md         brief projet pour Claude Code
 | 7 Modélisation | `07_modelisation.ipynb` | `models/pipeline_final.joblib` | 25 | À faire |
 | 8 Documentation | — | Reproductibilité | 5 | Continu |
 | 9 Soutenance | — | Support de présentation | 7 | À faire |
-| IA | — | `docs/journal_ia.md` | 5 | Continu, à remplir au fil de l'eau |
+| IA | — | `docs/journal_ia.md` | 5 | Continu |
 
 ## Les trois règles éliminatoires
 
