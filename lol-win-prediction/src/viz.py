@@ -25,8 +25,8 @@ from . import config
 
 PALETTE = config.PALETTE
 
-# Diverging ramp, brick to charcoal through a warm neutral. Used for the
-# correlation heatmap, where the sign matters as much as the magnitude.
+# Diverging ramp from brick to charcoal, through a warm neutral. We use it for the
+# correlation heatmap, where the sign matters as much as the size.
 CMAP_ARDOISE = LinearSegmentedColormap.from_list(
     "ardoise", [PALETTE["highlight"], "#E8D5C4", PALETTE["accent"], PALETTE["primary"]]
 )

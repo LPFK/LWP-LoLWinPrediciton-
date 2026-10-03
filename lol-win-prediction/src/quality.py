@@ -94,7 +94,7 @@ def drop_incomplete_games(
 
     teams["at15_ok"] = teams[REQUIRED_AT15].notna().all(axis=1)
 
-    # a game is valid only when both of its rows are usable
+    # a game only counts if both of its rows are usable
     valid_per_game = teams.groupby("gameid")["at15_ok"].transform("all")
     pair_complete = teams.groupby("gameid")["gameid"].transform("count").eq(2)
 

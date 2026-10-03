@@ -8,8 +8,8 @@ Graded academic ML project (Master 1, "Projet Final Machine Learning", Blocs 6 a
 Scored out of 100 points. The grading rubric drives every decision for us here.
 
 **All user-facing content (notebooks markdown cells, reports in `docs/`, figure labels,
-presentation) must be REVIEWED ONLY NEVER ANY CODE WRITTING.** that stends for Code, comments, variable names, commit
-messages
+presentation) must be written in French.** Code, comments, variable names, commit
+messages and this file stay in English.
 
 ## Goal
 
@@ -29,11 +29,11 @@ using only information available **at the 15-minute mark**.
    - Historical features (team form, champion winrate) must be computed with an
      expanding window over **past games only**, sorted by date. Never a global mean.
 2. **A notebook that does not run end to end caps the final grade at 50/100.**
-   - After any user edit, restart-and-run-all must succeed from a clean kernel.
-   - No hidden state, no cell that depends on a previously user deleted variable.
+   - After any edit, restart-and-run-all must succeed from a clean kernel.
+   - No hidden state, no cell that depends on a previously deleted variable.
 3. **No baseline computed caps the modelling phase at 15/25.**
    - Three baselines are mandatory before any model: majority class, "blue side always
-     wins", and "highest gold at 15 wins". They go in the notebook, not in a comment, always check these mistakes.
+     wins", and "highest gold at 15 wins". They go in the notebook, not in a comment.
 
 ## Data sources
 
@@ -58,7 +58,7 @@ data/interim/     after cleaning
 data/processed/   final modelling dataset (parquet)
 notebooks/        one notebook per project phase, all must run end to end
 src/              importable helpers used by the notebooks
-docs/             graded u-written deliverables
+docs/             graded written deliverables (French)
 figures/          exported PNG, minimum 7
 models/           joblib pipelines
 reference/        the course material. Read-only, never edit.
@@ -69,14 +69,14 @@ reference/        the course material. Read-only, never edit.
 `reference/` holds the course guide, phase by phase, plus `Grille_Evaluation.md`
 (the marking scheme) and `Ressource_Workflow_ML_Complet.ipynb`.
 
-Read the matching `reference/0X_*.md` before starting a review phase. If anything in this
-file contradicts the guide, **the guide wins** and you flag the contradiction and report it.
+Read the matching `reference/0X_*.md` before starting a phase. If anything in this
+file contradicts the guide, **the guide wins** and you flag the contradiction.
 
 `Ressource_Workflow_ML_Complet.ipynb` is the phase 7 skeleton supplied by the
 trainer: split, `ColumnTransformer`, `Pipeline`, `GridSearchCV`, evaluation, joblib
 export. Only three zones are meant to be adapted, marked `# <-- A ADAPTER`.
-User builds `07_modelisation.ipynb` by adapting that skeleton, not by rewriting it from
-scratch review and give needed changes. What is graded is the ability to adapt it and explain it.
+Build `07_modelisation.ipynb` by adapting that skeleton, not by rewriting it from
+scratch. What is graded is the ability to adapt it and explain it.
 
 Two deliberate departures from the skeleton, both decided in phase 0 and both to be
 justified in a markdown cell:
@@ -94,6 +94,8 @@ justified in a markdown cell:
 | `05_eda_analytique.ipynb` | 5 | answers to the 5 business questions in `docs/00_cadrage.md` |
 | `06_visualisation.ipynb` | 6 | 7+ figures in `figures/` |
 | `07_modelisation.ipynb` | 7 | baselines, 3+ models, `models/pipeline_final.joblib` |
+| `08_export_documentation.ipynb` | 8 | exports in 3 formats, `docs/reproductibilite.md`, `CHANGELOG.md`, `requirements-lock.txt` |
+| `09_soutenance.ipynb` | 9 | `docs/soutenance.md`, `docs/soutenance_deck.html`, deliverable checklist verified in code |
 
 ## Cleaning rules specific to this dataset
 
@@ -117,9 +119,13 @@ justified in a markdown cell:
   generalises to the 2026 test set.
 - Dates: parse with an explicit format, check consistency across five seasons.
 
-## Engineered features to build (7+ required, i aim for 10)
+## Engineered features to build (7+ required, aim for 10)
 
-1. `objectifs_precoces` = firstblood + firstdragon + firstherald + firsttower (0-4 score)
+1. `objectifs_precoces` = firstblood + firstdragon + firstherald (0-3 score).
+   Originally specified with `firsttower` as a fourth component. Dropped in phase 3: the flag is
+   attributed in 100 % of games and correlates at 0.391 with the target, against 0.18 to 0.25 for
+   the other three, because a first tower routinely falls after minute 15. See `LEAKY_COLUMNS` in
+   `src/config.py`.
 2. `diff_kills_at15` = killsat15 - opp_killsat15
 3. `compo_nb_tank`, `compo_nb_mage`, `compo_nb_marksman`, `compo_nb_fighter` from
    Data Dragon tags over the team's 5 picks
@@ -160,10 +166,18 @@ Stop and find it.
 
 Export the **full pipeline** (preprocessing + model) with joblib, never the bare estimator.
 
+## Style
+
+- Charcoal and slate palette for every figure. No default matplotlib blue-orange.
+- No emoji anywhere, in code or in markdown.
+- No em-dashes in French text.
+- Sentence case for headings.
+- Figures need French axis labels, a title and a readable legend.
 
 ## Working agreement
 
-- Explain each review. Any code that needs changes explain why and why it makes it better.
+- Explain before generating. Any code the student cannot defend orally is penalised,
+  not rewarded, by the grading rubric.
 - Prefer short, readable cells over clever one-liners.
 - When a choice is arbitrary, say so and offer the alternative rather than picking silently.
-- now Log every prompt used into `docs/journal_ia.md`. It is worth 5 points. 
+- Log every AI prompt used into `docs/journal_ia.md`. It is worth 5 points.

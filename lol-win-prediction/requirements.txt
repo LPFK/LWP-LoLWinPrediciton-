@@ -1,8 +1,11 @@
 pandas>=2.2
-numpy>=1.26
+# numpy : contrainte alignee en phase 8 sur l'environnement qui a produit les resultats
+# (1.24.2). Elle etait a >=1.26, donc plus stricte que la realite de l'execution.
+numpy>=1.24
 scikit-learn>=1.5
 matplotlib>=3.8
-seaborn>=0.13
+# seaborn retire en phase 8 : declare depuis le debut, importe nulle part. Toutes les
+# figures sont en matplotlib pur, pour garder le controle de la palette imposee.
 openpyxl>=3.1
 pyarrow>=15.0
 requests>=2.31

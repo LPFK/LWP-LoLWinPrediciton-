@@ -1,0 +1,766 @@
+<title>Minute 15</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+/* ---------------------------------------------------------------
+   Palette imposee par le projet, src/config.py. Charbon et ardoise,
+   brique en accent unique. Aucun bleu-orange par defaut.
+   --------------------------------------------------------------- */
+:root {
+  --fond: #EDEFF2;
+  --surface: #FFFFFF;
+  --encre: #2F3640;
+  --encre-douce: #5A6572;
+  --encre-tenue: #8D99AE;
+  --trait: #D8DCE1;
+  --accent: #B54B3A;
+  --barre-neutre: #C3CAD3;
+  --ombre: 0 1px 2px rgba(47, 54, 64, .06), 0 8px 24px rgba(47, 54, 64, .07);
+
+  --display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --texte: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fond: #1C2026;
+    --surface: #252A32;
+    --encre: #EDEFF2;
+    --encre-douce: #B4BCC6;
+    --encre-tenue: #8D99AE;
+    --trait: #3A414B;
+    --accent: #D2705C;
+    --barre-neutre: #4A525D;
+    --ombre: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .28);
+  }
+}
+
+:root[data-theme="dark"] {
+  --fond: #1C2026;
+  --surface: #252A32;
+  --encre: #EDEFF2;
+  --encre-douce: #B4BCC6;
+  --encre-tenue: #8D99AE;
+  --trait: #3A414B;
+  --accent: #D2705C;
+  --barre-neutre: #4A525D;
+  --ombre: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .28);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--fond);
+  color: var(--encre);
+  font-family: var(--texte);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.pont {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 40px 24px 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* --- La diapositive --------------------------------------------- */
+.dia {
+  background: var(--surface);
+  border: 1px solid var(--trait);
+  border-radius: 4px;
+  box-shadow: var(--ombre);
+  padding: 52px 60px;
+  min-height: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.entete {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--trait);
+  padding-bottom: 14px;
+}
+
+/* L'horloge gelee a 15:00 : l'instant de prediction, marqueur de tout le projet. */
+.horloge {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.numero {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  color: var(--encre-tenue);
+}
+
+h1 {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(38px, 5.6vw, 62px);
+  line-height: 1.04;
+  letter-spacing: -.022em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+h2 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(25px, 3vw, 34px);
+  line-height: 1.14;
+  letter-spacing: -.014em;
+  margin: 0;
+  text-wrap: balance;
+  max-width: 22ch;
+}
+
+h3 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: .01em;
+  margin: 0 0 8px;
+}
+
+p { margin: 0; max-width: 68ch; }
+.mou { color: var(--encre-douce); }
+.tenu { color: var(--encre-tenue); }
+strong { font-weight: 600; }
+
+.corps { display: flex; flex-direction: column; gap: 22px; flex: 1; }
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: start; }
+.trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 9px; }
+li { max-width: 62ch; }
+li::marker { color: var(--encre-tenue); }
+
+/* --- Chiffres, en mono tabulaire facon tableau d'affichage ------- */
+.stat { display: flex; flex-direction: column; gap: 4px; }
+.stat-valeur {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: clamp(34px, 4.4vw, 52px);
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+.stat-valeur.fort { color: var(--accent); }
+.stat-libelle { font-size: 13.5px; color: var(--encre-douce); max-width: 30ch; }
+
+/* --- Barres ------------------------------------------------------ */
+.barres { display: flex; flex-direction: column; gap: 14px; }
+.rangee { display: grid; grid-template-columns: 190px 1fr; gap: 16px; align-items: center; }
+.rangee-nom { font-size: 13.5px; color: var(--encre-douce); }
+.piste { position: relative; display: flex; flex-direction: column; gap: 5px; }
+.barre {
+  height: 17px;
+  background: var(--barre-neutre);
+  border-radius: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  min-width: 2px;
+}
+.barre.accent { background: var(--accent); }
+.barre-valeur {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--surface);
+  white-space: nowrap;
+}
+.barre-valeur.dehors {
+  color: var(--encre-douce);
+  position: absolute;
+  left: calc(var(--w) + 8px);
+}
+.legende {
+  display: flex;
+  gap: 20px;
+  font-size: 12px;
+  color: var(--encre-douce);
+  padding-left: 206px;
+}
+.puce { display: inline-flex; align-items: center; gap: 7px; }
+.pastille { width: 11px; height: 11px; border-radius: 1px; background: var(--barre-neutre); }
+.pastille.accent { background: var(--accent); }
+
+/* --- Tableaux ---------------------------------------------------- */
+.tableau-enveloppe { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { text-align: left; padding: 9px 14px 9px 0; border-bottom: 1px solid var(--trait); }
+th {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--encre-tenue);
+}
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+tr.retenu td { color: var(--accent); font-weight: 600; }
+
+/* --- Encadres ---------------------------------------------------- */
+.appui {
+  border-left: 2px solid var(--accent);
+  padding: 4px 0 4px 18px;
+  font-size: 15px;
+  max-width: 62ch;
+}
+.note { font-size: 13px; color: var(--encre-tenue); max-width: 66ch; }
+.etiquette {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--encre-tenue);
+}
+.priorite {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  padding: 2px 7px;
+  border: 1px solid var(--trait);
+  border-radius: 2px;
+  color: var(--encre-douce);
+  white-space: nowrap;
+}
+.priorite.haute { color: var(--accent); border-color: var(--accent); }
+
+.pied {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--trait);
+  font-size: 12px;
+  color: var(--encre-tenue);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.aide {
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--encre-tenue);
+  padding-bottom: 4px;
+}
+
+@media (max-width: 820px) {
+  .dia { padding: 34px 26px; min-height: 0; }
+  .duo, .trio { grid-template-columns: 1fr; gap: 24px; }
+  .rangee { grid-template-columns: 1fr; gap: 5px; }
+  .legende { padding-left: 0; flex-wrap: wrap; }
+}
+
+/* Une diapositive par page a l'impression, pour l'export PDF demande. */
+@media print {
+  body { background: #FFFFFF; }
+  .pont { max-width: none; padding: 0; gap: 0; }
+  .aide { display: none; }
+  .dia {
+    break-after: page;
+    box-shadow: none;
+    border: none;
+    min-height: 0;
+    padding: 28px 30px;
+  }
+  .dia:last-child { break-after: auto; }
+}
+</style>
+
+<div class="pont">
+
+  <p class="aide">Douze diapositives. Pour obtenir un PDF, imprimer cette page : une diapositive par feuille.</p>
+
+  <!-- 1 ---------------------------------------------------------- -->
+  <section class="dia">
+    <div class="entete">
+      <span class="horloge">15:00 / INSTANT DE PREDICTION</span>
+      <span class="numero">01 / 12</span>
+    </div>
+    <div class="corps" style="justify-content:center; gap:34px;">
+      <h1>Tous les avantages précoces ne se valent pas</h1>
+      <p style="font-size:19px; max-width:56ch;" class="mou">
+        Prédire l'issue d'une partie professionnelle de League of Legends à la quinzième minute,
+        et mesurer ce que vaut réellement chaque avantage obtenu avant elle.
+      </p>
+      <div class="trio" style="max-width:760px;">
+        <div class="stat">
+          <span class="stat-valeur">46 308</span>
+          <span class="stat-libelle">parties professionnelles, 2022 à 2026</span>
+        </div>
+        <div class="stat">
+          <span class="stat-valeur">82</span>
+          <span class="stat-libelle">ligues du circuit mondial</span>
+        </div>
+        <div class="stat">
+          <span class="stat-valeur">23</span>
+          <span class="stat-libelle">variables, toutes connues à la 15e minute</span>
+        </div>
+      </div>
+    </div>
+    <div class="pied">
+      <span>Projet final Machine Learning, blocs 6 et 8</span>
+      <span>Données : Oracle's Elixir, Tim Sevenhuysen</span>
+    </div>
+  </section>
+
+  <!-- 2 ---------------------------------------------------------- -->
+  <section class="dia">
+    <div class="entete"><span class="horloge">CONTEXTE</span><span class="numero">02 / 12</span></div>
+    <div class="corps">
+      <h2>Quinze minutes pèsent lourd, sans tout décider</h2>
+      <div class="duo">
+        <div style="display:flex; flex-direction:column; gap:18px;">
+          <p class="mou">
+            Les staffs professionnels et les plateformes de statistiques veulent savoir quels
+            avantages précoces se convertissent en victoire, et lesquels sont surestimés.
+          </p>
+          <p class="mou">
+            Un coach qui sait qu'un premier dragon vaut plus qu'un premier sang n'entraîne pas
+            comme un coach qui l'ignore. Un producteur qui affiche une probabilité de victoire en
+            direct doit pouvoir la défendre.
+          </p>
+          <div class="appui">
+            La question : à la quinzième minute, que vaut chaque avantage, et peut-on en tirer
+            une probabilité crédible ?
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div>
+            <h3>Public visé</h3>
+            <ul class="mou">
+              <li>Analystes et coachs d'équipes professionnelles</li>
+              <li>Plateformes de statistiques esport</li>
+              <li>Casteurs et producteurs de contenu</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Livrable métier</h3>
+            <p class="mou">
+              Une probabilité affichée à l'écran, pas un verdict binaire. Ce choix commande toute
+              la suite, jusqu'au choix des métriques.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pied"><span>Contexte et objectif</span><span>02</span></div>
+  </section>
+
+  <!-- 3 ---------------------------------------------------------- -->
+  <section class="dia">
+    <div class="entete"><span class="horloge">LES DONNEES</span><span class="numero">03 / 12</span></div>
+    <div class="corps">
+      <h2>Trois sources, et un piège dans la plupart des colonnes</h2>
+      <div class="duo">
+        <div class="tableau-enveloppe">
+          <table>
+            <thead>
+              <tr><th>Source</th><th>Format</th><th>Apport</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Oracle's Elixir</td><td>CSV</td><td>État de jeu et résultat</td></tr>
+              <tr><td>Riot Data Dragon</td><td>JSON</td><td>Tags de champions</td></tr>
+              <tr><td>Référentiel ligues</td><td>XLSX</td><td>Tier et région</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div class="stat">
+            <span class="stat-valeur">92 616</span>
+            <span class="stat-libelle">lignes équipe retenues, deux par partie</span>
+          </div>
+          <p class="note">
+            Cible parfaitement équilibrée à 50 %, par construction : chaque partie produit une
+            ligne gagnante et une ligne perdante.
+          </p>
+        </div>
+      </div>
+      <div class="appui">
+        Le défi principal n'est pas le volume. Oracle's Elixir est un export de <strong>fin de
+        partie</strong> : la majorité de ses colonnes contiennent le résultat. Une équipe qui a
+        détruit les inhibiteurs a gagné.
+      </div>
+      <div class="trio">
+        <div>
+          <span class="etiquette">Parade 1</span>
+          <p class="note">Instant de prédiction figé à 15:00. Toute colonne postérieure supprimée.</p>
+        </div>
+        <div>
+          <span class="etiquette">Parade 2</span>
+          <p class="note">Test empirique de corrélation. Cinq fuites rattrapées, dont une à 0,760.</p>
+        </div>
+        <div>
+          <span class="etiquette">Parade 3</span>
+          <p class="note">Variables historiques en fenêtre passée seule, vérifiées par un audit.</p>
+        </div>
+      </div>
+    </div>
+    <div class="pied"><span>Les données et le risque de fuite</span><span>03</span></div>
+  </section>
+
+  <!-- 4 ---------------------------------------------------------- -->
+  <section class="dia">
+    <div class="entete"><span class="horloge">INSIGHT 1</span><span class="numero">04 / 12</span></div>
+    <div class="corps">
+      <h2>Le classement auquel tout le monde se fie</h2>
+      <p class="mou">Pouvoir de séparation de chaque avantage, mesuré isolément sur 2022 à 2025.</p>
+      <div class="barres">
+        <div class="rangee"><span class="rangee-nom">Écart d'or</span><div class="piste"><div class="barre accent" style="width:91%"><span class="barre-valeur">0,820</span></div></div></div>
+        <div class="rangee"><span class="rangee-nom">Écart d'expérience</span><div class="piste"><div class="barre" style="width:88%"><span class="barre-valeur">0,792</span></div></div></div>
+        <div class="rangee"><span class="rangee-nom">Écart d'éliminations</span><div class="piste"><div class="barre" style="width:85%"><span class="barre-valeur">0,763</span></div></div></div>
+        <div class="rangee"><span class="rangee-nom">Écart de sbires</span><div class="piste"><div class="barre" style="width:83%"><span class="barre-valeur">0,748</span></div></div></div>
+        <div class="rangee"><span class="rangee-nom">Objectifs précoces</span><div class="piste"><div class="barre" style="width:75%"><span class="barre-valeur">0,679</span></div></div></div>
+        <div class="rangee"><span class="rangee-nom">Premier héraut</span><div class="piste"><div class="barre" style="width:68%"><span class="barre-valeur">0,615</span></div></div></div>
+        <div class="rangee"><span class="rangee-nom">Premier sang</span><div class="piste"><div class="barre" style="width:67%"><span class="barre-valeur">0,599</span></div></div></div>
+        <div class="rangee"><span class="rangee-nom">Premier dragon</span><div class="piste"><div class="barre" style="width:65%"><span class="barre-valeur">0,585</span></div></div></div>
+      </div>
+      <p class="note">AUC univariée. 0,50 signifie aucune information. Échelle de 0 à 0,90.</p>
+      <div class="appui">
+        Lu ainsi, les objectifs neutres comptent peu, et le premier dragon ferme la marche.
+        C'est la lecture habituelle. Elle est fausse.
+      </div>
+    </div>
+    <div class="pied"><span>Hiérarchie brute des avantages</span><span>04</span></div>
+  </section>
+
+  <!-- 5 ---------------------------------------------------------- -->
+  <section class="dia">
+    <div class="entete"><span class="horloge">INSIGHT 2 / DIAPOSITIVE CENTRALE</span><span class="numero">05 / 12</span></div>
+    <div class="corps">
+      <h2>À or égal, le classement s'inverse</h2>
+      <p class="mou">
+        Mesure restreinte aux parties où les deux équipes sont à moins de 250 or d'écart. Dans
+        cette bande, l'or n'explique plus rien : ce qui reste est un apport propre.
+      </p>
+      <div class="barres">
+        <div class="rangee">
+          <span class="rangee-nom">Premier héraut</span>
+          <div class="piste">
+            <div class="barre" style="width:92%"><span class="barre-valeur">+22,9</span></div>
+            <div class="barre" style="--w:4%; width:4%"><span class="barre-valeur dehors">+0,9&nbsp;&nbsp;non significatif</span></div>
+          </div>
+        </div>
+        <div class="rangee">
+          <span class="rangee-nom">Premier sang</span>
+          <div class="piste">
+            <div class="barre" style="width:80%"><span class="barre-valeur">+19,9</span></div>
+            <div class="barre" style="--w:2%; width:2%"><span class="barre-valeur dehors">+0,4&nbsp;&nbsp;non significatif</span></div>
+          </div>
+        </div>
+        <div class="rangee">
+          <span class="rangee-nom">Premier dragon</span>
+          <div class="piste">
+            <div class="barre" style="width:68%"><span class="barre-valeur">+17,1</span></div>
+            <div class="barre accent" style="width:56%"><span class="barre-valeur">+14,1 soit 1 030 or</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="legende">
+        <span class="puce"><span class="pastille"></span>Écart brut, toutes parties</span>
+        <span class="puce"><span class="pastille accent"></span>Écart à or égal, apport réel</span>
+      </div>
+      <div class="appui">
+        La mécanique du jeu explique tout. Le premier sang rapporte 400 or, le héraut se
+        transforme en plaques donc en or : les deux sont <strong>déjà comptés</strong> dans
+        l'écart d'or. Le dragon ne rapporte aucun or, seulement un bonus cumulatif. C'est
+        pourquoi lui seul survit au contrôle.
+      </div>
+    </div>
+    <div class="pied"><span>Écart de taux de victoire, en points</span><span>05</span></div>
+  </section>
+
+  <!-- 6 ---------------------------------------------------------- -->
+  <section class="dia">
+    <div class="entete"><span class="horloge">INSIGHT 3</span><span class="numero">06 / 12</span></div>
+    <div class="corps">
+      <h2>Deux idées reçues qui ne résistent pas</h2>
+      <div class="duo">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <span class="etiquette">La composition de draft</span>
+          <div class="stat">
+            <span class="stat-valeur">2,8</span>
+            <span class="stat-libelle">points d'écart maximal au hasard, tous intervalles de confiance contenant 50 %</span>
+          </div>
+          <p class="note">
+            À avantage économique égal, compter les tanks ou les mages ne prédit rien. Le
+            résultat porte sur cette représentation de la draft, un comptage de tags, et non sur
+            la draft en général.
+          </p>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <span class="etiquette">Le niveau de ligue</span>
+          <div class="stat">
+            <span class="stat-valeur">p = 0,56</span>
+            <span class="stat-libelle">tier 1 à 80,1 % contre tier 3 à 80,5 % sur la conversion d'une avance</span>
+          </div>
+          <p class="note">
+            Les ligues majeures ne ferment pas mieux leurs parties. La tendance va même
+            légèrement à l'inverse de l'idée reçue, mais reste dans le bruit.
+          </p>
+        </div>
+      </div>
+      <div class="appui">
+        Deux résultats négatifs, et ce sont les plus utiles à un staff : ils indiquent où ne pas
+        dépenser d'attention.
+      </div>
+    </div>
+    <div class="pied"><span>Composition de draft et niveau de ligue</span><span>06</span></div>
+  </section>
+
+  <!-- 7 ---------------------------------------------------------- -->
+  <section class="dia">
+    <div class="entete"><span class="horloge">INSIGHT 4</span><span class="numero">07 / 12</span></div>
+    <div class="corps">
+      <h2>Une partie sur trois est encore indécise</h2>
+      <div class="barres">
+        <div class="rangee">
+          <span class="rangee-nom">Serrée, sous 1 000 or</span>
+          <div class="piste"><div class="barre accent" style="width:29%"><span class="barre-valeur">29 %</span></div></div>
+        </div>
+        <div class="rangee">
+          <span class="rangee-nom">Intermédiaire</span>
+          <div class="piste"><div class="barre" style="width:43%"><span class="barre-valeur">43 %</span></div></div>
+        </div>
+        <div class="rangee">
+          <span class="rangee-nom">Large, plus de 3 000 or</span>
+          <div class="piste"><div class="barre" style="width:28%"><span class="barre-valeur">28 %</span></div></div>
+        </div>
+      </div>
+      <div class="trio">
+        <div class="stat"><span class="stat-valeur fort">57 %</span><span class="stat-libelle">le camp en avance gagne, en partie serrée</span></div>
+        <div class="stat"><span class="stat-valeur">74 %</span><span class="stat-libelle">en régime intermédiaire</span></div>
+        <div class="stat"><span class="stat-valeur">92 %</span><span class="stat-libelle">en partie large, presque sans modèle</span></div>
+      </div>
+      <div class="appui">
+        La forme récente pèse <strong>18,1 points</strong> dans une partie serrée contre
+        <strong>12,4 points</strong> quand l'équipe mène déjà. Elle mesure donc le niveau de
+        l'équipe, pas une capacité à conclure : l'écart de niveau se joue dans les parties
+        serrées, et c'est là qu'un modèle a de la valeur.
+      </div>
+    </div>
+    <div class="pied"><span>Les trois régimes de partie et la forme récente</span><span>07</span></div>
+  </section>
+
+  <!-- 8 ---------------------------------------------------------- -->
+  <section class="dia">
+    <div class="entete"><span class="horloge">INSIGHT 5</span><span class="numero">08 / 12</span></div>
+    <div class="corps">
+      <h2>Le côté bleu, faible mais immuable</h2>
+      <div class="duo">
+        <div style="display:flex; flex-direction:column; gap:18px;">
+          <div class="stat">
+            <span class="stat-valeur fort">52,9 %</span>
+            <span class="stat-libelle">de victoires pour le côté bleu, intervalle de confiance de 52,4 à 53,4</span>
+          </div>
+          <p class="mou">
+            L'intervalle ne touche pas 50 % : l'avantage est réel. Converti avec la pente de
+            conversion de l'or, il équivaut à <strong>215 or</strong> offerts avant le premier
+            pick.
+          </p>
+        </div>
+        <div class="tableau-enveloppe">
+          <table>
+            <thead><tr><th>Saison</th><th>Côté bleu</th><th>Intervalle</th></tr></thead>
+            <tbody>
+              <tr><td class="num">2022</td><td class="num">52,3 %</td><td class="num tenu">51,4 à 53,3</td></tr>
+              <tr><td class="num">2023</td><td class="num">53,4 %</td><td class="num tenu">52,3 à 54,4</td></tr>
+              <tr><td class="num">2024</td><td class="num">52,9 %</td><td class="num tenu">51,8 à 53,9</td></tr>
+              <tr><td class="num">2025</td><td class="num">53,3 %</td><td class="num tenu">52,3 à 54,3</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="appui">
+        Aucune dérive sur quatre saisons. Pour la modélisation c'est le profil idéal : un effet
+        faible mais stable traverse sans dommage la frontière du split chronologique.
+      </div>
+    </div>
+    <div class="pied"><span>Avantage de position</span><span>08</span></div>
+  </section>
+
+  <!-- 9 ---------------------------------------------------------- -->
+  <section class="dia">
+    <div class="entete"><span class="horloge">LE MODELE</span><span class="numero">09 / 12</span></div>
+    <div class="corps">
+      <h2>Le modèle le plus simple gagne</h2>
+      <div class="tableau-enveloppe">
+        <table>
+          <thead>
+            <tr><th>Famille</th><th>AUC validation</th><th>Log loss</th><th>Écart train/validation</th></tr>
+          </thead>
+          <tbody>
+            <tr class="retenu"><td>Régression logistique</td><td class="num">0,8362</td><td class="num">0,4959</td><td class="num">38 lignes</td></tr>
+            <tr><td>Forêt aléatoire</td><td class="num">0,8337</td><td class="num">0,5007</td><td class="num">584 lignes</td></tr>
+            <tr><td>Gradient boosting</td><td class="num">0,8332</td><td class="num">0,5002</td><td class="num">381 lignes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">
+        Trois familles comparées par GridSearchCV avec TimeSeriesSplit, split chronologique,
+        entraînement sur 2022 à 2025. Les trois tiennent en 0,003 d'AUC.
+      </p>
+      <div class="duo">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <span class="etiquette">Verdict sur 2026, ouvert une seule fois</span>
+          <div class="trio" style="gap:18px;">
+            <div class="stat"><span class="stat-valeur" style="font-size:34px">75,9 %</span><span class="stat-libelle">accuracy</span></div>
+            <div class="stat"><span class="stat-valeur" style="font-size:34px">0,844</span><span class="stat-libelle">ROC AUC</span></div>
+            <div class="stat"><span class="stat-valeur" style="font-size:34px">0,487</span><span class="stat-libelle">log loss</span></div>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <h3>Ce que le modèle a retenu</h3>
+          <p class="note">
+            <strong>Le premier dragon ressort au rang 2 sur 34</strong>, juste derrière l'écart
+            d'or. Une méthode entièrement différente de celle de la diapositive 5 aboutit à la
+            même conclusion.
+          </p>
+          <p class="note">
+            Limite : le modèle est le moins performant sur le tier 1, là où les remontées sont
+            les plus fréquentes. Cohérent avec l'analyse, et à dire avant qu'on le demande.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="pied"><span>Baselines, comparaison, verdict unique</span><span>09</span></div>
+  </section>
+
+  <!-- 10 --------------------------------------------------------- -->
+  <section class="dia">
+    <div class="entete"><span class="horloge">SYNTHESE</span><span class="numero">10 / 12</span></div>
+    <div class="corps" style="justify-content:center; gap:40px;">
+      <h2 style="max-width:30ch;">Trois chiffres à retenir</h2>
+      <div class="trio" style="gap:36px;">
+        <div class="stat">
+          <span class="stat-valeur fort">1 030 or</span>
+          <span class="stat-libelle">ce que vaut le premier dragon, à avantage économique égal</span>
+        </div>
+        <div class="stat">
+          <span class="stat-valeur">0</span>
+          <span class="stat-libelle">ce que vaut le premier sang, dans les mêmes conditions</span>
+        </div>
+        <div class="stat">
+          <span class="stat-valeur">+1,4 pt</span>
+          <span class="stat-libelle">ce que le modèle ajoute à une règle d'une seule ligne</span>
+        </div>
+      </div>
+      <div class="appui" style="font-size:17px;">
+        Le classement des avantages précoces auquel tout le monde se fie est presque exactement
+        à l'envers, et il suffit de comparer à or égal pour le voir.
+      </div>
+      <p class="note">
+        Le troisième chiffre est à mon désavantage, et c'est délibéré. La baseline « le plus
+        riche à 15 gagne » atteint déjà 74,5 %. Ce que le modèle apporte n'est pas l'accuracy,
+        c'est une probabilité calibrée, que la baseline ne sait pas produire.
+      </p>
+    </div>
+    <div class="pied"><span>Message principal</span><span>10</span></div>
+  </section>
+
+  <!-- 11 --------------------------------------------------------- -->
+  <section class="dia">
+    <div class="entete"><span class="horloge">RECOMMANDATIONS</span><span class="numero">11 / 12</span></div>
+    <div class="corps">
+      <h2>Quatre actions, priorisées</h2>
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:6px; flex-wrap:wrap;">
+            <span class="priorite haute">PRIORITE HAUTE</span>
+            <h3 style="margin:0;">Contester le dragon, cesser de courir après le premier sang</h3>
+          </div>
+          <p class="note">Un dragon sécurisé au prix de 1 000 or est un échange à l'équilibre. Un premier sang payé d'une position sur la carte est un mauvais échange. Applicable dès le prochain scrim.</p>
+        </div>
+        <div>
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:6px; flex-wrap:wrap;">
+            <span class="priorite haute">PRIORITE HAUTE</span>
+            <h3 style="margin:0;">Afficher le premier dragon plutôt que le premier sang</h3>
+          </div>
+          <p class="note">Pour un habillage de diffusion : remplacer un indicateur qui duplique l'écart d'or déjà affiché à côté par un indicateur qui porte réellement de l'information.</p>
+        </div>
+        <div>
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:6px; flex-wrap:wrap;">
+            <span class="priorite">PRIORITE MOYENNE</span>
+            <h3 style="margin:0;">Cibler le coaching sur les parties serrées</h3>
+          </div>
+          <p class="note">29 % des situations, et c'est là que l'écart de niveau pèse le plus. Sélectionner scrims et revues vidéo sur ce régime.</p>
+        </div>
+        <div>
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:6px; flex-wrap:wrap;">
+            <span class="priorite">PRIORITE BASSE</span>
+            <h3 style="margin:0;">Ne pas décoter un joueur de ligue mineure sur sa conversion</h3>
+          </div>
+          <p class="note">La valeur d'une avance de 15 minutes est la même à tous les niveaux de ligue. Élargit le vivier sans perte de qualité sur ce critère.</p>
+        </div>
+      </div>
+    </div>
+    <div class="pied"><span>Actions concrètes</span><span>11</span></div>
+  </section>
+
+  <!-- 12 --------------------------------------------------------- -->
+  <section class="dia">
+    <div class="entete"><span class="horloge">LIMITES</span><span class="numero">12 / 12</span></div>
+    <div class="corps">
+      <h2>Ce que cette analyse ne dit pas</h2>
+      <div class="duo">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div>
+            <h3>Association, pas causalité</h3>
+            <p class="note">Le contrôle porte sur l'or, pas sur le niveau des équipes. Une équipe plus forte prend plus souvent le dragon : les 1 030 or sont un majorant. Il faudrait un classement de type Elo, absent des sources.</p>
+          </div>
+          <div>
+            <h3>Périmètre incomplet</h3>
+            <p class="note">La règle de complétude a écarté une grande partie de la LPL. La Chine passe de 0,2 % de l'entraînement à 6,4 % du test, et le modèle y obtient sa plus mauvaise AUC régionale.</p>
+          </div>
+          <div>
+            <h3>Draft réduite à un comptage</h3>
+            <p class="note">L'ordre des picks et la synergie sont absents d'Oracle's Elixir. Le résultat négatif porte sur cette représentation, pas sur la draft.</p>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div>
+            <h3>Un modèle qui ignore la partie</h3>
+            <p class="note">Chaque ligne équipe est prédite séparément. Les deux probabilités d'une même partie ne somment donc à 1 qu'approximativement, avec 220 parties où les deux camps sont donnés gagnants. Mesuré et publié plutôt que passé sous silence.</p>
+          </div>
+          <div>
+            <h3>Dérive du méta</h3>
+            <p class="note">Quatre saisons agrégées, deux changements de règles majeurs. Atténué par le rang de patch et l'écart d'or normalisé, mais un réentraînement annuel reste nécessaire.</p>
+          </div>
+          <div class="appui">
+            Mentionner ces limites n'affaiblit pas les conclusions solides. C'est ce qui les rend
+            crédibles.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pied">
+      <span>Reproductibilité : docs/reproductibilite.md, empreinte du dataset publiée</span>
+      <span>12</span>
+    </div>
+  </section>
+
+</div>

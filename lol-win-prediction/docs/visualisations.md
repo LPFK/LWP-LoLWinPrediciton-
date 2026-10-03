@@ -56,7 +56,7 @@ modele peut esperer.
 
 ## Inventaire du dossier figures/
 
-15 fichiers, pour un minimum requis de 7.
+19 fichiers, pour un minimum requis de 7.
 
 - `02_completude_at15_ligue_saison.png`
 - `05_avantage_cote_bleu.png`
@@ -73,6 +73,10 @@ modele peut esperer.
 - `06_redondance_features.png`
 - `06_tableau_de_bord.png`
 - `06_trois_regimes_de_partie.png`
+- `07_calibration.png`
+- `07_coefficients_logistique.png`
+- `07_courbe_roc.png`
+- `07_matrice_confusion.png`
 
 ## Ce que ces figures preparent pour la phase 7
 

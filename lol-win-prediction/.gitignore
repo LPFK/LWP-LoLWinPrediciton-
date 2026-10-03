@@ -3,7 +3,9 @@
 data/raw/*
 data/interim/*
 data/processed/*
+data/exports/*
 !data/*/.gitkeep
+!data/exports/.gitkeep
 
 # Modèles entraînés, régénérés par le notebook 07
 models/*.joblib

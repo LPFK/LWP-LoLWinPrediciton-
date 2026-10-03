@@ -22,20 +22,19 @@ DOCS = ROOT / "docs"
 # --------------------------------------------------------------------------
 # Chronological split
 # --------------------------------------------------------------------------
-# Decided in phase 0: train on the past, test on the most recent season.
-# Reproduces the real usage condition and exposes concept drift, unlike a
-# random split which silently mixes patches and rosters across the boundary.
+# We settled this in phase 0: train on the past, test on the latest season. That's how
+# the model would really be used, and it shows concept drift. A random split would
+# quietly mix patches and rosters on both sides.
 
 SEASONS = [2022, 2023, 2024, 2025, 2026]
 TRAIN_SEASONS = [2022, 2023, 2024, 2025]
 TEST_SEASONS = [2026]
 
-# The split is cut on the DATE, never on `year`. Phase 2 established that `year`
-# is a season label, not a calendar year: 2712 rows are played between September
-# and December and carry the following season's label, and 10 rows are labelled
-# 2027. Splitting on the label would send December 2025 games into the test set
-# while later games stayed in training, breaking the very chronological ordering
-# the split exists to guarantee.
+# Careful: we split on the DATE, not on `year`. Phase 2 showed `year` is a season label,
+# not a calendar year. 2712 rows are played between September and December but carry
+# next season's label, and 10 rows are even labelled 2027. Splitting on the label would
+# push December 2025 games into test while later games stayed in train, which defeats
+# the whole point of a chronological split.
 SPLIT_DATE = "2026-01-01"
 
 RANDOM_STATE = 42
@@ -44,24 +43,24 @@ TARGET = "result"
 # --------------------------------------------------------------------------
 # Prediction instant
 # --------------------------------------------------------------------------
-# Everything in this project assumes the model is called at minute 15.
-# Any column whose value is unknown or not final at that instant is a leak.
+# The whole project assumes we call the model at minute 15. If a column isn't known (or
+# isn't final yet) at that point, it's a leak.
 
 PREDICTION_MINUTE = 15
 
 # --------------------------------------------------------------------------
 # Row-level inclusion rule (replaces a hardcoded league exclusion)
 # --------------------------------------------------------------------------
-# A game enters the dataset only if the 15-minute snapshot was actually
-# recorded. Measurable criterion, not a judgement on a league name.
-# Both rows of a game must pass, otherwise both are dropped, so the 50/50
-# target balance survives. See src/quality.py::drop_incomplete_games.
+# A game only gets in if its 15-minute snapshot was actually recorded. That's something
+# we can measure, not a judgement call on a league's name. Both rows of a game have to
+# pass or we drop both, so the target stays 50/50. See
+# src/quality.py::drop_incomplete_games.
 
 REQUIRED_AT15 = ["goldat15", "xpat15", "csat15", "golddiffat15", "xpdiffat15"]
 REQUIRED_COMPLETENESS = "complete"
 
-# Fill this only if the phase 2 audit proves a league is unusable for a reason
-# other than missing at15 data. Keep it empty by default.
+# Only fill this in if the phase 2 audit shows a league is unusable for some reason
+# other than missing at15 data. Empty by default.
 EXCLUDED_LEAGUES: list[str] = []
 
 # --------------------------------------------------------------------------
@@ -90,26 +89,25 @@ LEAKY_COLUMNS = [
     "infernals", "mountains", "clouds", "oceans", "chemtechs", "hextechs",
     "heralds", "opp_heralds", "void_grubs", "opp_void_grubs",
     "atakhans", "opp_atakhans",
-    # Found in phase 3: these survived the original deny-list and are end-of-game
-    # aggregates. Their absolute correlation with `result` is higher than that of
-    # golddiffat15 (0.535), which is the strongest legitimate signal available at
-    # minute 15. Anything above that line is answering the question, not
-    # predicting it.
+    # Caught these in phase 3: they slipped past the original deny-list, but they're
+    # end-of-game aggregates. They correlate with `result` more strongly than
+    # golddiffat15 (0.535), which is the best honest signal we have at minute 15.
+    # Anything above that line is basically reading the answer, not predicting it.
     "damagetotowers",        # 0.760
     "team kpm",              # 0.679
     "elementaldrakes",       # 0.586
     "opp_elementaldrakes",   # 0.586
     "ckpm",                  # 0.000, symmetric between both rows, but still a
                              # whole-game rate: unknown at minute 15
-    # `firsttower` is a whole-game flag, not a minute-15 state. It is attributed
-    # in 100 % of games, while firstblood, firstdragon and firstherald leave a
-    # few hundred games unattributed. A first tower routinely falls after minute
-    # 15 in professional play, so the flag imports future information, which its
-    # correlation confirms: 0.391 against 0.18 to 0.25 for the other three.
+    # `firsttower` is a whole-game flag, not a minute-15 state. It's set in 100 % of
+    # games, whereas firstblood, firstdragon and firstherald leave a few hundred games
+    # unattributed. In pro play the first tower often falls after minute 15, so the flag
+    # leaks future info, and the correlation backs that up: 0.391 vs 0.18 to 0.25 for
+    # the other three.
     "firsttower",
-    # duration is unknown at minute 15 and strongly correlated with the outcome
+    # we don't know the duration at minute 15, and it's strongly tied to the outcome
     "gamelength",
-    # snapshots taken after the prediction instant
+    # snapshots taken after minute 15
     "goldat20", "xpat20", "csat20", "opp_goldat20", "opp_xpat20", "opp_csat20",
     "golddiffat20", "xpdiffat20", "csdiffat20",
     "killsat20", "assistsat20", "deathsat20",
@@ -120,10 +118,10 @@ LEAKY_COLUMNS = [
     "opp_killsat25", "opp_assistsat25", "opp_deathsat25",
 ]
 
-# Columns that only exist in recent seasons (void grubs from 2024, Atakhan
-# from 2025). Already banned above as leaks, but the note matters when
-# concatenating five seasons: pd.concat fills the gap with NaN, and an unaware
-# imputer would invent values for 2022.
+# Columns that only exist in recent seasons (void grubs since 2024, Atakhan since 2025).
+# They're already banned above as leaks, but it's worth flagging when we stack five
+# seasons: pd.concat fills the gap with NaN, and a careless imputer would happily make
+# up values for 2022.
 SEASON_DEPENDENT_COLUMNS = ["void_grubs", "opp_void_grubs", "atakhans", "opp_atakhans"]
 
 # --------------------------------------------------------------------------
@@ -136,12 +134,12 @@ GAMESTATE_AT_15 = [
     "golddiffat15", "xpdiffat15", "csdiffat15",
     "killsat15", "assistsat15", "deathsat15",
     "opp_killsat15", "opp_assistsat15", "opp_deathsat15",
-    # `firsttower` deliberately absent: see the leak note above.
+    # `firsttower` left out on purpose, see the leak note above.
     "firstblood", "firstdragon", "firstherald",
-    # Known at minute 15, but the scale changes in 2026 (max 15 up to 2025, 45
-    # afterwards). Kept in the dataset for analysis, excluded from the features.
+    # Known at minute 15, but the scale changes in 2026 (capped at 15 up to 2025, 45
+    # after). We keep it around for analysis but don't use it as a feature.
     "turretplates", "opp_turretplates",
-    # Snapshot taken before the prediction instant, so legitimate.
+    # Snapshot taken before minute 15, so this one is fine.
     "goldat10", "xpat10", "csat10",
     "opp_goldat10", "opp_xpat10", "opp_csat10",
     "golddiffat10", "xpdiffat10", "csdiffat10",
@@ -160,36 +158,33 @@ PICK_COLUMNS = ["pick_top", "pick_jng", "pick_mid", "pick_bot", "pick_sup"]
 # --------------------------------------------------------------------------
 # Feature groups for the ColumnTransformer
 # --------------------------------------------------------------------------
-# Time-bound categoricals are deliberately excluded. With a chronological
-# split, `year` and `patch_major` take values in the test set that never
-# appear in training: OneHotEncoder(handle_unknown="ignore") encodes every
-# 2026 row as an all-zero block, which is dead weight at best.
-# `league` is excluded for the same reason: the circuit was reorganised in
-# 2025 (LCS became LTA, PCS and LJL merged into LCP), so the codes do not
-# survive the train/test boundary. Region and tier, read from the reference
-# table, do survive it.
+# Time-bound categoricals are left out on purpose. With a chronological split, `year`
+# and `patch_major` take values in test that never show up in train, so
+# OneHotEncoder(handle_unknown="ignore") turns every 2026 row into an all-zero block.
+# Dead weight at best. `league` is out for the same reason: the circuit got reshuffled
+# in 2025 (LCS became LTA, PCS and LJL merged into LCP), so the codes don't survive the
+# train/test boundary. Region and tier, read from the reference table, do.
 #
-# `league` stays in the dataframe for phase 5 analysis. It is simply not fed
-# to the model. See ANALYSIS_ONLY below.
+# `league` is still in the dataframe for the phase 5 analysis, we just don't feed it to
+# the model. See ANALYSIS_ONLY below.
 
 CATEGORICAL_FEATURES = [
     "side",
     "region",
     "tier_ligue",
-    # `split` removed in phase 3. It fails the same test as `league`: 32 values,
-    # 19.8 % missing, and 3 values appear only in 2026. OneHotEncoder with
-    # handle_unknown="ignore" would encode those rows as an all-zero block, so
-    # the information would be lost silently. `playoffs` carries the useful part
-    # of the signal as a stable boolean.
+    # Dropped `split` in phase 3. Same problem as `league`: 32 values, 19.8 % missing,
+    # and 3 values that only show up in 2026. OneHotEncoder with handle_unknown="ignore"
+    # would turn those rows into zeros and we'd lose the info without noticing.
+    # `playoffs` keeps the useful part as a stable boolean.
 ]
 
 NUMERIC_FEATURES = [
     "golddiffat15", "xpdiffat15", "csdiffat15",
     "diff_kills_at15", "deathsat15",
-    # `turretplates` removed in phase 3: its scale changes exactly on the
-    # train/test boundary (max 15 up to 2025, 45 in 2026, above 15 on 61 % of
-    # rows). A scaler fitted on 2022-2025 would map 2026 far outside the learned
-    # range and degrade the test season without raising anything.
+    # Dropped `turretplates` in phase 3: its scale changes right on the train/test
+    # boundary (max 15 up to 2025, 45 in 2026, above 15 on 61 % of rows). A scaler
+    # fitted on 2022-2025 would throw 2026 way outside the learned range and quietly
+    # hurt the test season.
     "objectifs_precoces",
     "compo_nb_tank", "compo_nb_mage", "compo_nb_marksman", "compo_nb_fighter",
     "profil_degats",
@@ -198,15 +193,15 @@ NUMERIC_FEATURES = [
     "patch_seq",
 ]
 
-# `firsttower` removed in phase 3, see the leak note in LEAKY_COLUMNS. The
-# engineered feature `objectifs_precoces` is therefore built on three components
-# instead of the four announced in CLAUDE.md, and scores 0 to 3.
+# `firsttower` was dropped in phase 3 (see the leak note in LEAKY_COLUMNS). So
+# `objectifs_precoces` is built from three components instead of the four CLAUDE.md
+# mentions, and goes from 0 to 3.
 BOOLEAN_FEATURES = ["playoffs", "firstblood", "firstdragon", "firstherald"]
 
-# Objectives resolved before minute 15, used to build `objectifs_precoces`.
+# Objectives settled before minute 15, used to build `objectifs_precoces`.
 EARLY_OBJECTIVES = ["firstblood", "firstdragon", "firstherald"]
 
-# Kept for analysis and traceability, never passed to the model.
+# Kept for analysis and traceability, but never fed to the model.
 ANALYSIS_ONLY = ["gameid", "date", "year", "league", "teamname", "teamid", "patch"]
 
 # --------------------------------------------------------------------------

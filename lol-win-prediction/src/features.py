@@ -23,12 +23,12 @@ import pandas as pd
 # --------------------------------------------------------------------------
 # Composition, rebuilt from the player rows
 # --------------------------------------------------------------------------
-# The team rows carry pick1..pick5, but they are missing on 9 % of rows. The
-# player rows carry `champion` with no gaps at all, and they are the only place
-# where a champion is tied to a role. They are therefore the source of truth.
+# Team rows do have pick1..pick5, but they're missing on 9 % of rows. Player rows have
+# `champion` with no gaps at all, and they're the only place a champion is tied to a
+# role, so we treat them as the source of truth.
 #
-# The join key is gameid + side, never gameid + teamid: `teamid` is missing on
-# 1 800 team rows, and a NaN key silently drops those groups.
+# Join on gameid + side, never gameid + teamid: `teamid` is missing on 1 800 team rows,
+# and a NaN key quietly drops those groups.
 
 DAMAGE_PHYSIQUE = {"Marksman", "Fighter", "Assassin"}
 DAMAGE_MAGIQUE = {"Mage"}
@@ -53,8 +53,8 @@ def composition_par_equipe(joueurs: pd.DataFrame, champions: pd.DataFrame) -> pd
     tags = champions.set_index("champion")[["tag_principal", "tag_secondaire"]]
     j = joueurs.merge(tags, left_on="champion", right_index=True, how="left")
 
-    # A champion counts for a tag whether it is its primary or secondary one:
-    # Nunu & Willump is Tank/Mage, and ignoring the second tag would lose that.
+    # A champion counts for a tag whether it's their primary or secondary one. Nunu &
+    # Willump is Tank/Mage, and ignoring the second tag would lose that.
     for tag in TAGS_CONNUS:
         j[f"est_{tag}"] = (
             (j["tag_principal"] == tag) | (j["tag_secondaire"] == tag)
@@ -76,9 +76,9 @@ def composition_par_equipe(joueurs: pd.DataFrame, champions: pd.DataFrame) -> pd
         champions_reconnus=("champion_reconnu", "sum"),
     )
 
-    # Share of physical damage among the champions whose damage profile is
-    # identifiable. Expressed as a share rather than an AD/AP ratio, which would
-    # divide by zero on a composition without a single mage.
+    # Share of physical damage among the champions whose damage profile we can tell. We
+    # use a share rather than an AD/AP ratio, since a ratio would divide by zero on a
+    # comp with no mage at all.
     total = compo["_n_ad"] + compo["_n_ap"]
     compo["profil_degats"] = np.where(total > 0, compo["_n_ad"] / total, np.nan)
 

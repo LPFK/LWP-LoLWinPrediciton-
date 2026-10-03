@@ -9,8 +9,12 @@ Classification binaire : prédire quelle équipe remporte une partie professionn
 ```bash
 python -m venv .venv
 source .venv/bin/activate        # Windows : .venv\Scripts\activate
-pip install -r requirements.txt
+pip install -r requirements-lock.txt
 ```
+
+`requirements.txt` donne les contraintes minimales, `requirements-lock.txt` les versions exactes
+de l'environnement qui a produit les résultats. Pour rejouer le projet à l'identique, installer
+le second. Le détail est dans `docs/reproductibilite.md`.
 
 ## Récupération des données
 
@@ -34,6 +38,7 @@ Attribution obligatoire : données fournies par Oracle's Elixir (Tim Sevenhuysen
 data/raw/         sources téléchargées, jamais modifiées, jamais versionnées
 data/interim/     après nettoyage
 data/processed/   dataset final de modélisation (parquet)
+data/exports/     exports de partage, parquet + csv + xlsx
 notebooks/        un notebook par phase, tous exécutables de bout en bout
 src/              fonctions réutilisables importées par les notebooks
 docs/             livrables écrits notés
@@ -41,6 +46,17 @@ figures/          exports PNG, 7 minimum
 models/           pipelines joblib
 CLAUDE.md         brief projet pour Claude Code
 ```
+
+Les six modules de `src/` :
+
+| Module | Rôle |
+|---|---|
+| `config.py` | Chemins, allow-lists de features, deny-list anti-fuite, palette. Source unique de vérité |
+| `extraction.py` | Téléchargement et lecture des trois sources, typage explicite |
+| `quality.py` | Diagnostics de qualité, règle d'inclusion des parties |
+| `features.py` | Construction des variables dérivées, dont les fenêtres passées seules |
+| `analyse.py` | Statistiques descriptives avec intervalles de confiance |
+| `viz.py` | Identité visuelle commune, formats numériques français |
 
 ## Avancement par phase
 
@@ -52,11 +68,45 @@ CLAUDE.md         brief projet pour Claude Code
 | 3 Nettoyage | `03_nettoyage.ipynb` | `docs/rapport_nettoyage.md` | 12 | Fait, 92 616 lignes et 66 colonnes en sortie |
 | 4 Transformation | `04_transformation.ipynb` | `docs/data_dictionary.md` | 8 | Fait, 23 features construites, 49 colonnes |
 | 5 EDA analytique | `05_eda_analytique.ipynb` | Réponses aux 5 questions business | 12 | Fait, 5 questions traitées sur 2022-2025 uniquement, `docs/rapport_analytique.md`, 5 figures |
-| 6 Visualisation | `06_visualisation.ipynb` | 7+ figures | 8 | Fait, 9 figures et un tableau de bord, 15 dans `figures/`, `docs/visualisations.md` |
-| 7 Modélisation | `07_modelisation.ipynb` | `models/pipeline_final.joblib` | 25 | À faire |
-| 8 Documentation | — | Reproductibilité | 5 | Continu |
-| 9 Soutenance | — | Support de présentation | 7 | À faire |
+| 6 Visualisation | `06_visualisation.ipynb` | 7+ figures | 8 | Fait, 9 figures et un tableau de bord, 19 dans `figures/`, `docs/visualisations.md` |
+| 7 Modélisation | `07_modelisation.ipynb` | `models/pipeline_final.joblib` | 25 | Fait, 3 baselines et 3 familles comparées, régression logistique retenue, 75,9 % d'accuracy et 0,844 d'AUC sur 2026 |
+| 8 Documentation | `08_export_documentation.ipynb` | Reproductibilité | 5 | Fait, exports en 3 formats, `docs/reproductibilite.md`, `CHANGELOG.md`, `requirements-lock.txt` |
+| 9 Soutenance | `09_soutenance.ipynb` | Support de présentation | 7 | Fait, `docs/soutenance.md` et `docs/soutenance_deck.html`, checklist des 14 livrables vérifiée par le code |
 | IA | — | `docs/journal_ia.md` | 5 | Continu |
+
+## Résultats
+
+| Indicateur | Valeur |
+|---|---|
+| Modèle retenu | Régression logistique, `C = 0,05` |
+| Accuracy sur 2026 | 75,9 % |
+| ROC AUC | 0,844 |
+| Log loss | 0,487 |
+| Meilleure baseline | 74,5 %, « le plus riche à 15 gagne » |
+| Gain sur la baseline | +1,4 point, soit 229 lignes sur 16 546 |
+
+Le résultat d'analyse principal : à avantage économique égal, le **premier dragon** vaut environ
+**1 030 or**, alors que le **premier sang** et le **premier héraut** ne valent rien de plus que
+l'or qu'ils rapportent déjà. Le classement brut des objectifs précoces est donc presque
+exactement inversé.
+
+## Documentation
+
+| Document | Contenu |
+|---|---|
+| `docs/00_cadrage.md` | Cadrage initial, écrit avant tout code |
+| `docs/data_dictionary.md` | Les 49 colonnes, unités, valeurs possibles, transformations, limitations |
+| `docs/rapport_diagnostic.md` | Audit qualité sur 5 dimensions |
+| `docs/rapport_nettoyage.md` | Fuites retirées, règle d'inclusion |
+| `docs/rapport_analytique.md` | Réponses aux 5 questions business |
+| `docs/visualisations.md` | Fiche par figure, règles de design appliquées |
+| `docs/rapport_modelisation.md` | Baselines, comparaison, verdict, biais |
+| `docs/reproductibilite.md` | Comment tout rejouer, empreinte de contrôle |
+| `docs/soutenance.md` | Executive summary, 12 diapositives, recommandations, limites, questions du jury |
+| `docs/soutenance_deck.html` | Le support de présentation. Imprimer pour obtenir un PDF |
+| `docs/guide_explication.md` | Comment expliquer le code et l'architecture à l'oral |
+| `docs/journal_ia.md` | Journal d'utilisation de l'IA |
+| `docs/difficultes.md` | Journal des difficultés rencontrées |
 
 ## Les trois règles éliminatoires
 

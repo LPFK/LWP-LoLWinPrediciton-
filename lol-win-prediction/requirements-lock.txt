@@ -1,0 +1,17 @@
+# Versions exactes de l'environnement ayant produit les resultats du projet.
+# Genere par notebooks/08_export_documentation.ipynb le 2026-09-08.
+# Python 3.10.4 sur Windows 10.
+
+gdown==6.2.0
+joblib==1.5.3
+matplotlib==3.10.9
+numpy==1.24.2
+openpyxl==3.1.5
+pandas==2.3.3
+pyarrow==25.0.1
+requests==2.32.5
+scikit-learn==1.7.2
+
+# Declares mais absents de l'environnement de reference, versions non figeables.
+# Necessaires malgre tout : la contrainte minimale est reprise telle quelle.
+jupyterlab>=4.0

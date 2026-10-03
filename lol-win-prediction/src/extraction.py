@@ -25,9 +25,9 @@ OE_DRIVE_FOLDER = "https://drive.google.com/drive/folders/1gLSw0RLjBbtaNy0dgnGQD
 DDRAGON_VERSIONS = "https://ddragon.leagueoflegends.com/api/versions.json"
 DDRAGON_CHAMPIONS = "https://ddragon.leagueoflegends.com/cdn/{version}/data/{locale}/champion.json"
 
-# Per-season Drive file ids, read from the public folder listing. Downloading by
-# id fetches only the five seasons we model instead of the whole 2014-2026
-# folder. Refresh them from OE_DRIVE_FOLDER if the maintainer re-uploads.
+# Drive file ids for each season, taken from the public folder listing. Grabbing files
+# by id means we only download the five seasons we actually use, not the whole 2014-2026
+# folder. If the maintainer re-uploads, refresh these from OE_DRIVE_FOLDER.
 OE_FILE_IDS = {
     2022: "1EHmptHyzY8owv0BAcNKtkQpMwfkURwRy",
     2023: "1XXk2LO0CsNADBB1LRGOV5rUpyZdEZ8s2",
@@ -138,9 +138,9 @@ def load_oracles_elixir(seasons: list[int] | None = None) -> pd.DataFrame:
 # --------------------------------------------------------------------------
 # Typed loading, shared by every notebook after phase 1
 # --------------------------------------------------------------------------
-# `patch` must stay text: read as a float, "12.01" and "12.10" become 12.01 and
-# 12.1, and the sort inverts them. Ids must stay text too, otherwise a missing
-# value turns the column into floats and "12345.0" no longer joins to "12345".
+# `patch` has to stay a string: as floats, "12.01" and "12.10" become 12.01 and 12.1,
+# and sorting flips them. Same for ids: one missing value turns the column into floats,
+# and then "12345.0" no longer matches "12345".
 
 OE_DTYPES = {
     "gameid": "string",
@@ -157,8 +157,8 @@ OE_DTYPES = {
     "datacompleteness": "string",
 }
 
-# The only player-row columns later phases need: they alone tie a champion to a
-# role. Everything else on a player row is an end-of-game aggregate.
+# The only player-row columns later phases need, since they're what links a champion to
+# a role. Everything else on a player row is an end-of-game total.
 PLAYER_PROJECTION = [
     "gameid", "teamid", "side", "position", "playername", "champion", "year", "patch",
 ]
@@ -314,23 +314,23 @@ def load_champions() -> pd.DataFrame:
 # Source 3: league reference table (XLSX)
 # --------------------------------------------------------------------------
 
-# Covers every `league` code observed in the 2022-2026 team rows, 84 in total,
-# plus "LCK CL" kept as a spelling variant of "LCKC".
+# Covers every `league` code we see in the 2022-2026 team rows (84 of them),
+# plus "LCK CL", which is just another spelling of "LCKC".
 #
-# Tier is a competitive level, not a judgement on play quality:
+# Tier is about competitive level, not about how good the play is:
 #   1  circuit qualifying directly to Worlds, plus the international events
 #   2  senior national or regional league
 #   3  academy, challenger, development, collegiate, or secondary cup
 #
-# `confiance` records how each row was established, so the uncertainty stays
-# visible instead of being laundered into a clean-looking table:
-#   haute    competition identified with certainty
-#   moyenne  region established from the rosters, exact competition inferred
+# `confiance` says how sure we are about each row, so the guesswork stays
+# visible instead of hiding behind a tidy-looking table:
+#   haute    we know exactly which competition it is
+#   moyenne  region worked out from the rosters, exact competition inferred
 #
-# Codes whose meaning was not obvious were resolved by reading the team names
-# actually present in that league. LAS, for instance, is not a Latin American
-# league despite the initials: its rosters are T1 Esports Academy Rookies and
-# DRX Academy, so it is the Korean academy series.
+# When a code wasn't obvious, we looked at the team names actually playing in
+# that league. LAS, for example, isn't Latin American despite the initials: its
+# rosters are T1 Esports Academy Rookies and DRX Academy, so it's the Korean
+# academy series.
 LEAGUE_REFERENCE = [
     # league, tier, region, franchisee, confiance
 

@@ -182,6 +182,61 @@ d'entraînement, et `HistGradientBoostingClassifier` sait les traiter nativement
 
 ---
 
+### D14. `requirements.txt` décrivait un autre environnement que celui de l'exécution
+
+**Phase 8.** L'audit des dépendances, qui compare ce qui est déclaré, ce qui est importé par le
+code et ce qui est installé, a sorti deux incohérences. `numpy` était déclaré `>=1.26` alors que
+tout le projet a tourné sous 1.24.2 : la contrainte était plus stricte que la réalité, et un
+tiers l'installant scrupuleusement n'aurait pas reconstitué l'environnement. `seaborn` était
+déclaré et n'est importé nulle part, toutes les figures étant en matplotlib pur.
+
+**Résolution.** Contrainte `numpy` ramenée à `>=1.24`, `seaborn` retiré, et l'audit affiné pour
+ne plus signaler à tort `pyarrow`, `openpyxl` et `jupyterlab`, qui sont des dépendances
+d'exécution appelées par pandas et non des imports directs.
+
+**Ce qu'il faut retenir.** Cette incohérence a vécu pendant tout le projet sans conséquence
+visible, parce que tout fonctionnait sur la machine qui avait produit les fichiers. C'est
+exactement ce qui la rendait dangereuse : elle n'aurait fait de dégâts que chez la personne qui
+aurait tenté de reprendre le projet. L'audit aurait dû être écrit en phase 1.
+
+### D15. Le fichier de versions figées ne permettait pas d'ouvrir un notebook
+
+**Phase 8, trouvé en revue générale.** `requirements-lock.txt` était construit à partir des seuls
+paquets **installés**. Comme `jupyterlab` est déclaré mais absent de cet environnement, il en
+disparaissait silencieusement. Or le README dit d'installer le lock puis d'ouvrir les notebooks :
+la procédure documentée laissait l'utilisateur sans aucun moyen d'en ouvrir un.
+
+**Résolution.** Le lock comporte désormais un second bloc pour les paquets déclarés mais non
+installés, avec leur contrainte minimale, et une assertion vérifie que le fichier contient bien
+de quoi ouvrir un notebook.
+
+**Ce qu'il faut retenir.** C'est la phase dédiée à l'audit des dépendances qui a introduit le
+défaut. Un fichier généré n'est pas fiable parce qu'il est généré : il faut vérifier qu'il rend
+le service attendu, pas seulement qu'il s'écrit.
+
+### D16. Le notebook de soutenance se vérifiait lui-même en cours d'exécution
+
+**Phase 9.** La checklist finale contrôle que les neuf notebooks sont exécutés sans erreur. Le
+notebook 09 en fait partie, et au moment où la cellule tourne, son propre fichier sur disque n'a
+pas encore de sorties. Le contrôle échouait donc systématiquement, sur lui-même.
+
+**Résolution.** Le notebook 09 est exclu du contrôle, avec la raison écrite dans le code. Il se
+vérifie autrement : en allant jusqu'à sa dernière cellule sans lever d'exception.
+
+### D17. Trois documents figeaient les mêmes chiffres à la main
+
+**Phase 9, trouvé en revue générale.** Le dossier de soutenance, le support de présentation et le
+guide d'explication répètent les mêmes mesures, saisies à la main, alors que
+`docs/rapport_modelisation.md` est généré par le notebook 07. C'était le seul endroit du projet
+où la règle « les documents sont produits par le code qui produit les données » n'était pas
+tenue, donc le seul endroit où un ré-entraînement aurait rendu trois documents faux en silence.
+
+**Résolution.** Le notebook 09 relit le rapport généré, en extrait les mesures du modèle final et
+de la baseline, et échoue si elles ne correspondent pas aux valeurs saisies, en nommant les
+fichiers à corriger.
+
+---
+
 ## Partie 2 : difficultés à suivre
 
 Points non résolus, ou résolus sous conditions. À relire avant la phase 7 et avant la soutenance.
