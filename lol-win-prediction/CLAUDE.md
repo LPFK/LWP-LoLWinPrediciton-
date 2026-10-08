@@ -123,9 +123,10 @@ justified in a markdown cell:
 
 1. `objectifs_precoces` = firstblood + firstdragon + firstherald (0-3 score).
    Originally specified with `firsttower` as a fourth component. Dropped in phase 3: the flag is
-   attributed in 100 % of games and correlates at 0.391 with the target, against 0.18 to 0.25 for
-   the other three, because a first tower routinely falls after minute 15. See `LEAKY_COLUMNS` in
-   `src/config.py`.
+   attributed in 100 % of games and correlates at 0.381 (train only) with the target, against
+   0.17 to 0.23 for the other three, because a first tower routinely falls after minute 15. The
+   three retained flags were themselves re-audited empirically in phase 3 section 3.3 and pass.
+   See `LEAKY_COLUMNS` in `src/config.py` and `scripts/audit_firstX_leakage.py`.
 2. `diff_kills_at15` = killsat15 - opp_killsat15
 3. `compo_nb_tank`, `compo_nb_mage`, `compo_nb_marksman`, `compo_nb_fighter` from
    Data Dragon tags over the team's 5 picks

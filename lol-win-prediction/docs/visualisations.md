@@ -32,15 +32,15 @@ modele peut esperer.
 
 | Fichier | Question business | Type de graphique | Message transmis | Audience | Poids (ko) |
 |---|---|---|---|---|---|
-| 06_tableau_de_bord.png | Vue d'ensemble | Tableau de bord, tuiles plus courbe plus barres | Quatre chiffres a retenir et la relation qui structure le projet | Direction sportive, producteur | 190 |
+| 06_tableau_de_bord.png | Vue d'ensemble | Tableau de bord, tuiles plus courbe plus barres | Quatre chiffres a retenir et la relation qui structure le projet | Direction sportive, producteur | 189 |
 | 06_hierarchie_avantages.png | Question 1 | Barres horizontales triees | Le classement brut place les objectifs precoces loin derriere l'or | Analyste, casteur | 101 |
 | 06_illusion_des_objectifs.png | Question 1 | Barres groupees, contraste | A or egal le classement s'inverse : le dragon vaut 1 030 or, les autres zero | Coach, analyste | 81 |
 | 06_avantage_cote_bleu.png | Question 2 | Ligne temporelle plus barres d'ecart au hasard | Un avantage de 2,9 points, faible mais stable sur quatre saisons | Coach, staff de draft | 113 |
 | 06_composition_sans_effet.png | Question 3 | Petits multiples, points et intervalles | Aucune composition ne sort du hasard une fois l'or neutralise | Staff de draft | 83 |
-| 06_forme_par_regime.png | Question 4 | Lignes multiples, trois series | La forme mesure le niveau de l'equipe, pas une capacite a conclure | Coach, preparateur mental | 111 |
+| 06_forme_par_regime.png | Question 4 | Lignes multiples, trois series | La forme mesure le niveau de l'equipe, pas une capacite a conclure | Coach, preparateur mental | 113 |
 | 06_ligues_conversion.png | Question 5 | Barres groupees depuis zero | Le niveau de ligue ne change pas la valeur d'une avance precoce | Recrutement, scouting | 83 |
 | 06_trois_regimes_de_partie.png | Transversale | Histogramme avec zones | Un tiers des parties est deja pliee, un tiers est encore indecise | Analyste, jury technique | 87 |
-| 06_redondance_features.png | Preparation phase 7 | Carte de chaleur divergente | Deux features portent la meme information a 1,00 de correlation | Technique | 278 |
+| 06_redondance_features.png | Preparation phase 7 | Carte de chaleur divergente | Deux features portent la meme information a 1,00 de correlation | Technique | 276 |
 
 ## Chiffres cles portes par les figures
 
@@ -52,7 +52,7 @@ modele peut esperer.
 | Avantage du cote bleu | 52,9 % [52,4 ; 53,4] | `06_avantage_cote_bleu.png` |
 | Parties encore serrees a 15 minutes | 29 % des lignes, camp en avance a 57 % | `06_trois_regimes_de_partie.png` |
 | Parties deja pliees | 28 % des lignes, camp en avance a 92 % | `06_trois_regimes_de_partie.png` |
-| Ecart tier 1 contre tier 3 | -0,4 point, p = 0,56 | `06_ligues_conversion.png` |
+| Ecart tier 1 contre tier 3 | -0,4 point, p = 0,58 | `06_ligues_conversion.png` |
 
 ## Inventaire du dossier figures/
 

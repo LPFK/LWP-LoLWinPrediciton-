@@ -2,15 +2,15 @@
 
 Journal des versions du projet. Genere par `notebooks/08_export_documentation.ipynb`.
 
-## v1.0 - 2026-09-08
+## v1.0 - 2026-10-08
 
 Premiere version complete, phases 0 a 8.
 
 ### Donnees
 - Chargement des 3 sources : Oracle's Elixir 2022-2026, Riot Data Dragon, referentiel des ligues
 - Regle d'inclusion fondee sur la completude mesuree du snapshot a 15 minutes, jamais sur un nom
-  de ligue : 92 616 lignes equipe retenues
-- 5 colonnes de fuite rattrapees par un controle de correlation, dont `damagetotowers` a 0,760
+  de ligue : 94 840 lignes equipe retenues
+- 5 colonnes de fuite rattrapees par un controle de correlation sur l'entrainement, dont `damagetotowers` a 0,829
 - `firsttower` ecartee contre le cadrage initial, apres mesure
 
 ### Variables
@@ -25,9 +25,9 @@ Premiere version complete, phases 0 a 8.
 - 15 figures produites, dont un tableau de bord
 
 ### Modelisation
-- 3 baselines calculees avant tout modele, la plus forte a 73,87 % d'accuracy
+- 3 baselines calculees avant tout modele, la plus forte a 73,85 % d'accuracy
 - 3 familles comparees par `GridSearchCV` avec `TimeSeriesSplit`
-- Regression logistique retenue : 75,87 % d'accuracy et 0,8438 d'AUC sur 2026
+- Regression logistique retenue : 75,80 % d'accuracy et 0,8457 d'AUC sur 2026
 - Pipeline complete exportee, preprocessing inclus
 
 ### Documentation

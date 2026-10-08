@@ -21,8 +21,8 @@ redemarre.
 
 | Element | Valeur |
 |---|---|
-| Python | 3.10.4 |
-| Systeme | Windows 10 |
+| Python | 3.13.7 |
+| Systeme | Windows 11 |
 | Graine aleatoire | 42, fixee dans `src/config.py` et propagee partout |
 | Versions exactes | `requirements-lock.txt` |
 | Contraintes minimales | `requirements.txt` |
@@ -52,15 +52,15 @@ Le dataset final doit avoir cette empreinte. Elle est calculee sur les valeurs e
 fichier, car deux ecritures Parquet du meme contenu ne donnent pas des octets identiques.
 
 ```
-7f195b18e1d8b0d50f0cf4c73f49ec6924d2a1da3f6ec2d4ca256d493786a8b3
+e2e286e55ddf9cda302b2f174749c0a62d8b68d53709dafa4337698b28cc70df
 ```
 
 | Propriete | Valeur attendue |
 |---|---|
-| Lignes | 92 616 |
+| Lignes | 94 840 |
 | Colonnes | 49 |
-| Parties | 46 308 |
-| Periode | 2022-01-10 au 2026-09-06 |
+| Parties | 47 420 |
+| Periode | 2022-01-10 au 2026-10-07 |
 | Taux de victoire | 50.00 % |
 
 Pour la verifier :
@@ -103,6 +103,6 @@ modifiera legitimement l'empreinte. Dans ce cas, comparer les dimensions plutot 
 
 | Fichier | Format | Usage |
 |---|---|---|
-| `data/exports/lolwin_at15_20260908.parquet` | Parquet | Reference, typage preserve |
-| `data/exports/lolwin_at15_20260908.csv` | CSV UTF-8 | Echange, compatibilite |
-| `data/exports/lolwin_at15_20260908.xlsx` | Excel, 3 feuilles | Partage avec un public non technique |
+| `data/exports/lolwin_at15_20261008.parquet` | Parquet | Reference, typage preserve |
+| `data/exports/lolwin_at15_20261008.csv` | CSV UTF-8 | Echange, compatibilite |
+| `data/exports/lolwin_at15_20261008.xlsx` | Excel, 3 feuilles | Partage avec un public non technique |

@@ -91,19 +91,22 @@ LEAKY_COLUMNS = [
     "atakhans", "opp_atakhans",
     # Caught these in phase 3: they slipped past the original deny-list, but they're
     # end-of-game aggregates. They correlate with `result` more strongly than
-    # golddiffat15 (0.535), which is the best honest signal we have at minute 15.
-    # Anything above that line is basically reading the answer, not predicting it.
-    "damagetotowers",        # 0.760
+    # golddiffat15 (0.533 train-only), which is the best honest signal we have at
+    # minute 15. Anything above that line is basically reading the answer, not
+    # predicting it. All correlations below are measured on the training rows only
+    # (date < config.SPLIT_DATE); the test season is never used for the audit.
+    "damagetotowers",        # 0.829
     "team kpm",              # 0.679
-    "elementaldrakes",       # 0.586
-    "opp_elementaldrakes",   # 0.586
+    "elementaldrakes",       # 0.580
+    "opp_elementaldrakes",   # 0.579
     "ckpm",                  # 0.000, symmetric between both rows, but still a
                              # whole-game rate: unknown at minute 15
     # `firsttower` is a whole-game flag, not a minute-15 state. It's set in 100 % of
     # games, whereas firstblood, firstdragon and firstherald leave a few hundred games
     # unattributed. In pro play the first tower often falls after minute 15, so the flag
-    # leaks future info, and the correlation backs that up: 0.391 vs 0.18 to 0.25 for
-    # the other three.
+    # leaks future info, and the correlation backs that up: 0.381 train-only, vs 0.17 to
+    # 0.23 for the other three. See notebook 03 section 3.3 for the empirical audit of
+    # firstblood, firstdragon and firstherald.
     "firsttower",
     # we don't know the duration at minute 15, and it's strongly tied to the outcome
     "gamelength",

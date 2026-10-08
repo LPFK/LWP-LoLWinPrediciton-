@@ -40,7 +40,7 @@ data/interim/             lignes équipe et lignes joueur, nettoyées
    |  notebook 03         retrait des colonnes de fuite, règle d'inclusion
    v
 data/processed/           dataset final de modélisation
-   |                      lol_at15.parquet, 92 616 lignes, 49 colonnes
+   |                      lol_at15.parquet, 94 840 lignes, 49 colonnes
    |  notebook 04         jointures, 11 variables construites
    |
    +--> notebooks 05, 06  analyse et figures, sur 2022-2025 uniquement
@@ -145,7 +145,7 @@ pouvait se produire.
 
 Détail en section 5.
 
-### `src/analyse.py`, 229 lignes
+### `src/analyse.py`, 231 lignes
 
 Statistiques descriptives, avec l'incertitude attachée. Écrit en phase 5.
 
@@ -412,14 +412,14 @@ production. Savoir énoncer ce compromis vaut mieux que de faire semblant qu'il 
 
 Celles auxquelles il faut avoir réfléchi avant, parce qu'elles se répondent mal à froid.
 
-### « Votre modèle ne bat la baseline que de 1,4 point. À quoi sert-il ? »
+### « Votre modèle ne bat la baseline que de 1,2 point. À quoi sert-il ? »
 
 Ne pas se défendre sur l'accuracy, c'est le terrain perdant. Répondre en trois temps.
 
 1. C'est vrai, et c'est pour cela que je l'annonce moi-même en synthèse.
 2. La baseline ne produit pas de probabilité, seulement un verdict binaire. Elle est incapable de
    distinguer une partie serrée d'une partie pliée.
-3. Le livrable métier défini au cadrage est une probabilité affichée. Le modèle atteint 0,487 de
+3. Le livrable métier défini au cadrage est une probabilité affichée. Le modèle atteint 0,486 de
    log loss avec une calibration proche de la diagonale. C'est ce que la baseline ne sait pas
    faire, et l'accuracy n'est pas la métrique qui le montre.
 
@@ -442,18 +442,18 @@ Trois garde-fous, à citer dans cet ordre.
 1. Une deny-list centralisée, écrite à partir du cadrage.
 2. Un test empirique : `golddiffat15` est le signal légitime le plus fort à la 15e minute et
    corrèle à 0,535 ; toute colonne qui corrèle davantage contient le résultat au lieu de le
-   prédire. Ce test a rattrapé cinq oublis, dont `damagetotowers` à 0,760.
+   prédire. Ce test est appliqué au seul jeu d'entraînement et a rattrapé cinq oublis, dont `damagetotowers` à 0,829.
 3. Un audit qui vérifie qu'aucune variable historique n'est renseignée sur la première partie d'un
    groupe.
 
-Et le contrôle final : le résultat, 75,9 % d'accuracy, est dans le domaine de 72 à 78 % annoncé
+Et le contrôle final : le résultat, 75,8 % d'accuracy, est dans le domaine de 72 à 78 % annoncé
 **avant** la modélisation. Un score à 90 % aurait déclenché une recherche de fuite.
 
 ### « Pourquoi avoir écarté `firsttower` alors que votre cadrage le gardait ? »
 
 Assumer le changement d'avis est un point fort. Deux mesures l'ont imposé : la colonne est
 attribuée dans 100 % des parties, là où les trois autres objectifs laissent des parties sans
-titulaire, et elle corrèle à 0,391 contre 0,18 à 0,25 pour les autres. En jeu professionnel la
+titulaire, et elle corrèle à 0,381 sur l'entraînement contre 0,17 à 0,23 pour les autres. En jeu professionnel la
 première tourelle tombe souvent après la 15e minute.
 
 Conséquence assumée : `objectifs_precoces` somme trois objectifs et non quatre comme annoncé au
@@ -483,7 +483,7 @@ de type Elo, qui n'existe dans aucune des trois sources.
 | Commencer par la méthodologie | C'est la partie la plus solide, elle répond mieux qu'elle n'introduit | Commencer par le renversement des objectifs |
 | Dire « le modèle a trouvé que » | Un modèle ne trouve pas, il ajuste | « Le coefficient indique que, conditionnellement à » |
 | Dire « corrélation » quand tu veux dire « effet » | Le jury attend cette confusion | « Associé à », et préciser le contrôle |
-| Cacher le gain de 1,4 point | Il se verra, et le cacher décrédibilise le reste | L'annoncer en synthèse, comme troisième chiffre clé |
+| Cacher le gain de 1,2 point | Il se verra, et le cacher décrédibilise le reste | L'annoncer en synthèse, comme troisième chiffre clé |
 | Réciter le code | Personne ne teste ta mémoire | Expliquer le problème que la ligne résout |
 | Dire « je ne sais pas » et s'arrêter | La question reste ouverte | « Je ne l'ai pas mesuré. Ce que je peux dire, c'est que » |
 
@@ -511,12 +511,12 @@ fait prédire, en quelques secondes.
 
 | Chiffre | Valeur |
 |---|---|
-| Lignes équipe | 92 616 |
+| Lignes équipe | 94 840 |
 | Parties | 46 308 |
 | Période | 2022 à 2026 |
 | Ligues | 82 |
 | Variables données au modèle | 23, dont 11 construites |
-| Entraînement / test | 76 070 / 16 546 lignes |
+| Entraînement / test | 76 058 / 18 782 lignes |
 
 ### Les résultats d'analyse
 
@@ -537,12 +537,12 @@ fait prédire, en quelques secondes.
 
 | Chiffre | Valeur |
 |---|---|
-| Baselines sur 2026 | 50,0 % / 53,9 % / 74,5 % |
+| Baselines sur 2026 | 50,0 % / 53,9 % / 74,6 % |
 | Modèle retenu | Régression logistique, `C = 0,05` |
-| Accuracy sur 2026 | 75,9 % |
-| ROC AUC | 0,844 |
-| Log loss | 0,487 |
-| Gain sur la baseline économique | +1,4 point, 229 lignes sur 16 546 |
+| Accuracy sur 2026 | 75,8 % |
+| ROC AUC | 0,845 |
+| Log loss | 0,486 |
+| Gain sur la baseline économique | +1,2 point, 231 lignes sur 18 782 |
 | Écart entre les trois familles | 0,003 d'AUC |
 | Écart train/validation, logistique | 38 lignes |
 | Écart train/validation, forêt | 584 lignes |
@@ -554,5 +554,5 @@ fait prédire, en quelques secondes.
    exactement à l'envers, et il suffit de comparer à or égal pour le voir.
 2. **La méthode.** Dans une bande où l'écart d'or est quasi nul, l'or n'explique plus rien, donc ce
    qui reste est un apport propre.
-3. **L'honnêteté.** La baseline atteint déjà 74,5 %. Ce que le modèle apporte n'est pas l'accuracy,
+3. **L'honnêteté.** La baseline atteint déjà 74,6 %. Ce que le modèle apporte n'est pas l'accuracy,
    c'est une probabilité calibrée.

@@ -4,7 +4,7 @@ Phase 2 du projet final Machine Learning. Document généré par
 `notebooks/02_eda_diagnostique.ipynb`, à ne pas éditer à la main.
 
 Périmètre : lignes équipe d'Oracle's Elixir, saisons 2022 à 2026.
-Volume analysé : 104,544 lignes équipe, 52,272 parties, 165 colonnes.
+Volume analysé : 106,796 lignes équipe, 53,398 parties, 165 colonnes.
 
 ## Score de qualité global
 
@@ -12,15 +12,15 @@ Volume analysé : 104,544 lignes équipe, 52,272 parties, 165 colonnes.
 
 | Dimension | Note sur 5 | Principaux problèmes | Priorité |
 |---|---|---|---|
-| Complétude | 3 | 11.4 % des lignes équipe sans snapshot à 15 min, 17 colonnes au-dessus de 30 % de manquants | haute |
-| Unicité | 5 | Aucun doublon, structure parfaite. Seule réserve : 1,800 lignes sans teamid | basse |
-| Cohérence | 3 | split ingérable (32 modalités, 3 absentes du train). year est une étiquette de saison, pas une année civile. Arithmétique interne parfaite | haute |
-| Exactitude | 2 | turretplates change d'échelle en 2026 (max 15 vers 45) sur la frontière du split, 3 parties sans vainqueur | haute |
+| Complétude | 3 | 11.2 % des lignes équipe sans snapshot à 15 min, 17 colonnes au-dessus de 30 % de manquants | haute |
+| Unicité | 5 | Aucun doublon, structure parfaite. Seule réserve : 1,896 lignes sans teamid | basse |
+| Cohérence | 3 | split ingérable (33 modalités, 3 absentes du train). year est une étiquette de saison, pas une année civile. Arithmétique interne parfaite | haute |
+| Exactitude | 2 | turretplates change d'échelle en 2026 (max 15 vers 45) sur la frontière du split, 2 parties sans vainqueur | haute |
 | Fraîcheur | 4 | Source à jour et sans trou mensuel, mais 2026 est tronquée au 6 septembre, sans Worlds | moyenne |
 
 ## 1. Complétude
 
-88.6 % des lignes équipe disposent d'un snapshot complet à la minute 15,
+88.8 % des lignes équipe disposent d'un snapshot complet à la minute 15,
 sur les colonnes `goldat15`, `xpat15`, `csat15`, `golddiffat15`, `xpdiffat15`.
 
 La règle d'inclusion retenue en phase 0 impose que **les deux** lignes d'une partie soient
@@ -29,10 +29,10 @@ déséquilibrerait la cible, dont le 50/50 est la propriété la plus utile de c
 
 | Mesure | Valeur |
 |---|---|
-| Lignes équipe complètes | 92,616 |
-| Lignes équipe incomplètes | 11,928 |
-| Parties entièrement exploitables | 46,308 sur 52,272 |
-| Lignes réellement perdues, par paires | 11,928 |
+| Lignes équipe complètes | 94,840 |
+| Lignes équipe incomplètes | 11,956 |
+| Parties entièrement exploitables | 47,420 sur 53,398 |
+| Lignes réellement perdues, par paires | 11,956 |
 | Surcoût de la règle des deux lignes | 0 lignes |
 
 17 colonnes dépassent 30 % de valeurs manquantes,
@@ -44,14 +44,14 @@ L'incomplétude n'est pas aléatoire, elle se concentre par ligue et par saison.
 
 | Ligue | Lignes | Complétude at15 (%) | Lignes perdues |
 |---|---|---|---|
-| LPL | 7432 | 14.2 | 6377 |
+| LPL | 7474 | 14.5 | 6390 |
 | LDL | 4704 | 0.0 | 4704 |
 | ASCI | 300 | 0.0 | 300 |
-| DCup | 424 | 35.4 | 274 |
+| DCup | 430 | 34.9 | 280 |
 | MSI | 770 | 79.7 | 156 |
-| WLDs | 1040 | 90.0 | 104 |
-| LEC | 2988 | 99.9 | 3 |
-| ESLOL | 1666 | 99.9 | 2 |
+| WLDs | 1064 | 90.2 | 104 |
+| WLRQ | 12 | 0.0 | 12 |
+| LEC | 3032 | 99.9 | 3 |
 
 Cela confirme la décision de phase 0 : filtrer sur la disponibilité **mesurée** du snapshot,
 jamais sur le nom d'une ligue.
@@ -67,11 +67,11 @@ phase 7, dans un `Pipeline` ajusté sur le seul jeu d'entraînement.
 | Doublons sur gameid + teamid, clé renseignée | 0 |
 | Parties n'ayant pas exactement 2 lignes équipe | 0 |
 | Parties n'ayant pas exactement 10 lignes joueur | 0 |
-| Lignes sans teamid | 1,800 |
+| Lignes sans teamid | 1,896 |
 
 Dimension la plus saine du jeu de données. Piège méthodologique à signaler : `duplicated`
 traite deux `NaN` comme égaux, si bien qu'un test naïf sur `gameid` + `teamid` remonte
-325 faux doublons, qui sont en réalité des parties valides opposant deux équipes
+346 faux doublons, qui sont en réalité des parties valides opposant deux équipes
 distinctes dépourvues d'identifiant.
 
 ## 3. Cohérence
@@ -83,18 +83,18 @@ l'autre. La source est fiable sur ce plan, et `golddiffat15` est donc redondant 
 
 Deux problèmes réels.
 
-**La colonne `split` ne survit pas au split chronologique.** 32 modalités,
-19.8 % de valeurs manquantes, et 3 modalités
+**La colonne `split` ne survit pas au split chronologique.** 33 modalités,
+19.4 % de valeurs manquantes, et 3 modalités
 présentes en 2026 mais absentes de l'entraînement (Lock-In, Rounds 3-4, Versus).
 `OneHotEncoder(handle_unknown="ignore")` les encoderait en bloc de zéros, donc perdrait
 l'information sans lever d'erreur. Action : retirer `split` de `CATEGORICAL_FEATURES` et
 conserver `playoffs`.
 
-**`year` est une étiquette de saison, pas une année civile.** 2,712 lignes
-(2.6 %) portent un `year` différent de l'année de leur
+**`year` est une étiquette de saison, pas une année civile.** 2,962 lignes
+(2.8 %) portent un `year` différent de l'année de leur
 date. Ce ne sont pas des erreurs : ces parties se jouent entre septembre et décembre et portent
 l'étiquette de la saison suivante, parce que les circuits ouvrent leur saison à l'automne
-précédent. À cela s'ajoutent 10 lignes étiquetées 2027.
+précédent. À cela s'ajoutent 254 lignes étiquetées 2027.
 
 Le défaut n'est donc pas dans la colonne mais dans l'usage qu'on voudrait en faire. Découper sur
 `year` reviendrait à découper sur une étiquette de compétition alors que l'objectif est un
@@ -108,7 +108,7 @@ Dimension la plus faible, et porteuse du risque principal du projet.
 
 **`turretplates` change d'échelle exactement sur la frontière du split.** Le maximum théorique
 est de 15, soit trois tourelles extérieures à cinq plaques. De 2022 à 2025 la colonne le
-respecte. En 2026 elle atteint 45 et dépasse 15 sur 61 %
+respecte. En 2026 elle atteint 45 et dépasse 15 sur 62 %
 des lignes.
 
 Cette colonne figurait dans `config.NUMERIC_FEATURES` au moment du diagnostic, et la phase 3
@@ -126,7 +126,7 @@ justifie le split chronologique, qu'un split aléatoire aurait masqué, et motiv
 assumée : aucun retrait, sous peine de supprimer les parties les plus faciles à prédire et de
 dégrader artificiellement la performance mesurée.
 
-**3 parties n'ont aucun vainqueur**, leurs deux lignes portant `result` à 0. Six
+**2 parties n'ont aucun vainqueur**, leurs deux lignes portant `result` à 0. Six
 lignes à supprimer par paires.
 
 Contrôle rassurant : aucune des 10 parties de moins de quinze minutes ne porte de
@@ -137,8 +137,8 @@ snapshot à quinze minutes. La source n'invente pas de données.
 | Mesure | Valeur |
 |---|---|
 | Première partie | 2022-01-10 |
-| Dernière partie | 2026-09-06 |
-| Retard de la source | 0 jour(s) |
+| Dernière partie | 2026-10-07 |
+| Retard de la source | -31 jour(s) |
 | Mois sans aucune partie | 0 |
 
 La source est à jour et sans trou mensuel. En revanche **la saison de test est tronquée** : 2026
@@ -162,7 +162,7 @@ régulière, alors que les saisons d'entraînement contiennent leurs phases fina
 | 2026 tronquée, sans Worlds | eleve | difficile | 2 | Non corrigeable, à énoncer comme limite d'évaluation | 9 |
 | Dérive de méta sur l'or et l'expérience | eleve | difficile | 2 | Construire ecart_or_normalise, rapporté à la médiane du patch | 4 |
 | Région CEI réduite à 32 lignes | faible | facile | 3 | Regrouper les régions rares | 4 |
-| teamid manquant sur 1,800 lignes | faible | facile | 3 | Se rabattre sur teamname pour les variables de forme | 4 |
+| teamid manquant sur 1,896 lignes | faible | facile | 3 | Se rabattre sur teamname pour les variables de forme | 4 |
 | Outliers d'écart d'or | faible | difficile | 4 | Ne rien faire, ce sont de vraies parties déséquilibrées | 3 |
 
 Les chantiers de priorité 1 sont tous à fort impact et faciles à corriger. Ils tiennent en

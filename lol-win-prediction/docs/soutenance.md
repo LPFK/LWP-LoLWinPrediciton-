@@ -16,8 +16,8 @@ quels avantages precoces se convertissent reellement en victoire, et lesquels so
 **Objectif.** Determiner ce que vaut chaque avantage disponible a la 15e minute, et construire un
 modele qui affiche une probabilite de victoire credible a cet instant.
 
-**Methodologie.** 92 616 lignes equipe, 46 308 parties professionnelles de
-2022 a 2026, 82 ligues, croisees avec les tags de champions de Riot Data Dragon et
+**Methodologie.** 94 840 lignes equipe, 47 420 parties professionnelles de
+2022 a 2026, 84 ligues, croisees avec les tags de champions de Riot Data Dragon et
 un referentiel de ligues construit a la main. 23 variables retenues, toutes connues
 a la 15e minute. Entrainement sur 2022-2025, test sur 2026 ouvert une seule fois.
 
@@ -28,9 +28,9 @@ a la 15e minute. Entrainement sur 2022-2025, test sur 2026 ouvert une seule fois
 2. **Le premier sang ne vaut rien au-dela de l'or qu'il rapporte** : 0,4 point
    a avantage egal, p = 0,77. Le premier heraut non plus, alors qu'il mene le
    classement brut avec 22,9 points d'ecart.
-3. **Le modele atteint 75,9 % d'accuracy et 0,844 d'AUC**
-   contre 74,5 % pour la regle « le plus riche a 15 gagne », soit
-   1,4 point de gain. Son apport reel est la probabilite calibree, que la
+3. **Le modele atteint 75,8 % d'accuracy et 0,845 d'AUC**
+   contre 74,6 % pour la regle « le plus riche a 15 gagne », soit
+   1,2 point de gain. Son apport reel est la probabilite calibree, que la
    baseline ne sait pas produire.
 
 **Recommandations.** Prioriser la contestation du premier dragon sur la recherche du premier
@@ -61,7 +61,7 @@ Projet final Machine Learning, blocs 6 et 8.
 
 - Trois sources, trois formats : Oracle's Elixir (CSV), Riot Data Dragon (JSON), referentiel de
   ligues (XLSX)
-- 92 616 lignes equipe, 46 308 parties, 2022 a 2026, 82 ligues
+- 94 840 lignes equipe, 47 420 parties, 2022 a 2026, 84 ligues
 - Defi qualite principal : un export de fin de partie, ou la majorite des colonnes contiennent le
   resultat. Instant de prediction fige a la 15e minute, tout le reste supprime
 - Regle d'inclusion fondee sur la completude mesuree, jamais sur un nom de ligue
@@ -115,13 +115,13 @@ Projet final Machine Learning, blocs 6 et 8.
 - Cible : `result`, classification binaire, classes equilibrees a 50 %
 - Metrique principale : ROC AUC. Secondaires : accuracy pour la communication, log loss pour la
   calibration, car le livrable est une probabilite affichee et non un verdict
-- Trois baselines calculees avant tout modele, la plus forte a 74,5 % sur 2026
+- Trois baselines calculees avant tout modele, la plus forte a 74,6 % sur 2026
 - Trois familles comparees par `GridSearchCV` avec `TimeSeriesSplit` : regression logistique,
   foret aleatoire, gradient boosting. Elles tiennent en 0,003 d'AUC
 - **La regression logistique gagne** : la mieux calibree, et 38 lignes d'ecart
   entrainement/validation contre 584 pour la foret
-- Verdict sur 2026, ouvert une seule fois : 75,9 % d'accuracy,
-  0,844 d'AUC, 0,487 de log loss
+- Verdict sur 2026, ouvert une seule fois : 75,8 % d'accuracy,
+  0,845 d'AUC, 0,486 de log loss
 - Figures : `07_courbe_roc.png`, `07_calibration.png`, `07_coefficients_logistique.png`
 - Interpretation : `firstdragon` ressort au rang 2 sur 34, confirmant la mesure
   de la phase 5 par une methode independante
@@ -134,7 +134,7 @@ Projet final Machine Learning, blocs 6 et 8.
 |---|---|
 | **1 030 or** | Ce que vaut le premier dragon a avantage economique egal |
 | **0** | Ce que vaut le premier sang dans les memes conditions |
-| **1,4 point** | Ce que le modele ajoute a une regle d'une ligne |
+| **1,2 point** | Ce que le modele ajoute a une regle d'une ligne |
 
 Message principal : tous les avantages precoces ne se valent pas, et le classement auquel tout le
 monde se fie est presque exactement a l'envers.
@@ -320,12 +320,12 @@ verifier une affirmation plutot que de la supposer, valent bien au-dela de ce su
 | Question probable | Reponse |
 |---|---|
 | Pourquoi la 15e minute et pas la 10e ou la 20e ? | Oracle's Elixir fournit des snapshots a 10, 15, 20 et 25 minutes. La 15e est le dernier instant ou une majorite de parties reste indecise, 29 % sous 1 000 or d'ecart, tout en portant deja du signal |
-| Pourquoi avoir ecarte `firsttower` alors que le cadrage la gardait ? | Deux mesures. Elle est attribuee dans 100 % des parties, la ou les trois autres objectifs laissent des parties sans titulaire, et elle correle a 0,391 contre 0,18 a 0,25. En jeu professionnel la premiere tourelle tombe souvent apres la 15e minute |
+| Pourquoi avoir ecarte `firsttower` alors que le cadrage la gardait ? | Deux mesures. Elle est attribuee dans 100 % des parties, la ou les trois autres objectifs laissent des parties sans titulaire, et elle correle a 0,381 sur l'entrainement contre 0,17 a 0,23 pour les autres. En jeu professionnel la premiere tourelle tombe souvent apres la 15e minute. Les trois drapeaux conserves ont ete reaudites empiriquement en phase 3 section 3.3 et passent |
 | Pourquoi `TimeSeriesSplit` plutot qu'un `KFold` ? | Un `KFold` remelange l'ordre chronologique a l'interieur du train et reproduit a petite echelle le probleme que le split chronologique corrige : le modele validerait sur des parties anterieures a certaines de ses parties d'entrainement |
-| Le gain de 1,4 point justifie-t-il un modele ? | En accuracy, difficilement. Mais la baseline ne produit pas de probabilite, seulement un verdict binaire. Le livrable metier est une probabilite affichee, et le modele atteint 0,487 de log loss avec une calibration proche de la diagonale |
+| Le gain de 1,2 point justifie-t-il un modele ? | En accuracy, difficilement. Mais la baseline ne produit pas de probabilite, seulement un verdict binaire. Le livrable metier est une probabilite affichee, et le modele atteint 0,486 de log loss avec une calibration proche de la diagonale |
 | Pourquoi le coefficient de `firstblood` est-il negatif ? | Il se lit conditionnellement, pas causalement. A ecart d'or, d'experience et de kills donnes, le residu du premier sang n'a plus de valeur. C'est coherent avec la phase 5, qui mesurait 0,4 point non significatif a or egal |
 | Le split aleatoire donne un meilleur score, pourquoi garder le chronologique ? | Parce que les deux protocoles n'evaluent pas la meme population : le test chronologique ne contient que 2026, homogene, le test aleatoire tire dans cinq saisons heterogenes. Le choix se justifie par la condition d'usage, predire des parties futures, pas par le score |
-| Comment savez-vous qu'il n'y a pas de fuite ? | Trois garde-fous. Une deny-list centralisee dans `src/config.py`, un test empirique de correlation qui a rattrape cinq oublis, et un audit verifiant qu'aucune variable historique n'est renseignee sur la premiere partie d'un groupe. Le resultat, 75,9 % d'accuracy, est dans le domaine annonce avant modelisation |
+| Comment savez-vous qu'il n'y a pas de fuite ? | Trois garde-fous. Une deny-list centralisee dans `src/config.py`, un test empirique de correlation qui a rattrape cinq oublis, et un audit verifiant qu'aucune variable historique n'est renseignee sur la premiere partie d'un groupe. Le resultat, 75,8 % d'accuracy, est dans le domaine annonce avant modelisation |
 | Que feriez-vous avec plus de temps ? | L'ordre de la draft et un classement Elo par equipe. Trois familles de modeles se tiennent en 0,003 d'AUC : le plafond vient de l'information disponible, pas de l'algorithme |
 
 ---

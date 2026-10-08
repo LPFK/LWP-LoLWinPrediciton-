@@ -32,7 +32,7 @@ auraient été comptées avec un champion de moins.
 **Résolution.** Téléchargement des deux locales. `champion` porte le nom anglais et sert de clé,
 `nom_fr` est conservé pour les figures et les rapports, qui doivent être en français.
 
-**Vérifié en phase 4.** Les 5 champions sont reconnus sur les 92 616 équipes-parties.
+**Vérifié en phase 4.** Les 5 champions sont reconnus sur les 94 840 équipes-parties.
 
 ### D3. `csv.Sniffer` n'arrivait pas à détecter le séparateur
 
@@ -106,14 +106,17 @@ sur la date ne sert pas à rattraper des erreurs, il sert à préserver l'ordre 
 de fin de partie.
 
 **Comment elles ont été trouvées.** Un test empirique : corrélation absolue de chaque colonne
-survivante avec la cible. `golddiffat15` est le meilleur signal légitime à la minute 15 et
-corrèle à 0,535. Toute colonne au-dessus contient le résultat au lieu de le prédire.
+survivante avec la cible, calculée sur le seul jeu d'entraînement (dates antérieures à
+`SPLIT_DATE`). Le jeu de test 2026 n'est jamais regardé, pas même pour auditer les colonnes
+qu'on va jeter. `golddiffat15` est le meilleur signal légitime à la minute 15 et corrèle à
+0,533 sur l'entraînement. Toute colonne au-dessus contient le résultat au lieu de le prédire.
 
-| Colonne | Corrélation |
+| Colonne | Corrélation (train) |
 |---|---|
-| `damagetotowers` | 0,760 |
+| `damagetotowers` | 0,829 |
 | `team kpm` | 0,679 |
-| `elementaldrakes` et `opp_elementaldrakes` | 0,586 |
+| `elementaldrakes` | 0,580 |
+| `opp_elementaldrakes` | 0,579 |
 | `ckpm` | 0,000 |
 
 **Le cas `ckpm` est instructif.** Sa corrélation est nulle parce qu'elle vaut la même chose pour
@@ -130,9 +133,10 @@ rédigée à la main, et pas la compléter après coup.
 
 **Deux mesures le contredisent.** Il est attribué dans 100 % des parties, alors que
 `firstblood`, `firstdragon` et `firstherald` laissent des parties sans titulaire : un drapeau qui
-trouve toujours un titulaire décrit la partie entière, pas un instant. Et il corrèle à 0,391,
-contre 0,18 à 0,25 pour les trois autres. En jeu professionnel la première tourelle tombe
-couramment après la quinzième minute, les plaques ne disparaissant qu'à la quatorzième.
+trouve toujours un titulaire décrit la partie entière, pas un instant. Et il corrèle à 0,381
+sur l'entraînement, contre 0,17 à 0,23 pour les trois autres. En jeu professionnel la première
+tourelle tombe couramment après la quinzième minute, les plaques ne disparaissant qu'à la
+quatorzième.
 
 **Résolution.** Ajouté aux colonnes de fuite. `objectifs_precoces` somme trois objectifs et vaut
 0 à 3. Divergence assumée avec CLAUDE.md, motivée par une mesure.
@@ -265,17 +269,38 @@ Pour ces lignes, la **région** est solide, c'est le **tier** qui est le plus in
 résultat serré, ce chiffre est la première objection à anticiper. Un contrôle de robustesse
 consisterait à refaire l'analyse sur les seules lignes en confiance haute.
 
-### R3. Les trois objectifs conservés restent des drapeaux de partie entière
+### R3. Les trois objectifs conservés restent des drapeaux de partie entière, test empirique
 
 `firsttower` a été écarté, mais `firstblood`, `firstdragon` et `firstherald` sont construits de
 la même façon : ils décrivent toute la partie, pas l'état à la minute 15.
 
-Le risque est faible et documenté. Le héraut disparaît de la carte à la quatorzième minute, donc
-`firstherald` est nécessairement résolu avant l'instant de prédiction. Le premier dragon apparaît
-à la cinquième minute et le premier sang tombe presque toujours tôt.
+**L'argument mécanique initial était partiellement faux.** Le cadrage disait que le héraut
+disparaît de la carte à la quatorzième minute, donc `firstherald` est nécessairement résolu
+avant l'instant de prédiction. Cette affirmation n'est vraie qu'à partir de la saison 14
+(2024), où le héraut spawn à 14:00 et devient un combat unique juste avant la fenêtre de
+prédiction. En 2022 et 2023, le héraut spawnait à 8:00 et pouvait être contesté jusqu'à
+19:45, soit bien après la minute 15. Le risque de fuite était donc réel sur ces deux
+saisons, et une clause "tester uniquement si le modèle dépasse 78 %" aurait de toute façon
+jamais déclenché le contrôle, le résultat final tombant à 75,8 %.
 
-**À faire.** Si un modèle dépasse nettement les 78 % d'exactitude attendus, tester en retirant
-`objectifs_precoces` pour mesurer sa contribution réelle.
+**La mesure a remplacé la mécanique.** Deux contrôles, tous deux conduits sur le seul jeu
+d'entraînement, dans `notebooks/03_nettoyage.ipynb` section 3.3 :
+
+1. Corrélation absolue de chaque drapeau avec `result`, saison par saison. Si pré-2024 un
+   héraut tardif encodait le vainqueur de fin de partie, on verrait une corrélation plus
+   haute en 2022-2023 qu'en 2024-2025. On observe l'inverse exact : `firstherald` passe de
+   0,17 en 2022-2023 à 0,33 en 2025. L'augmentation suit le redesign d'objectif, pas la
+   présence d'une fuite.
+2. Hold-one-out au niveau modèle, régression logistique entraînée sur 2022-2025 et scorée
+   sur 2026. Retirer `firstherald` *dégrade* la généralisation (-0,2 point d'exactitude),
+   retirer `firstdragon` la dégrade plus (-0,4 point). Un drapeau fuyant devrait produire
+   l'inverse : son retrait améliore ou laisse identique la performance sur des données
+   nouvelles.
+
+**Décision.** Les trois drapeaux restent dans les features. Le journal garde cette entrée
+comme preuve que l'hypothèse a été testée, non abandonnée tacitement. Le code de l'audit
+est en dur dans la section 3.3 de la phase 3, et un script autonome dans
+`scripts/audit_firstX_leakage.py` permet de rejouer la vérification hors des notebooks.
 
 ### R4. `ecart_or_normalise` dépasse légèrement le plafond de corrélation
 

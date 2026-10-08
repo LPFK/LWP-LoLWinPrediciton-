@@ -14,15 +14,15 @@ plus `side`.
 | Nom du fichier | `lol_at15.parquet` |
 | Format | Parquet, compression par defaut de pyarrow |
 | Encodage | UTF-8 |
-| Lignes | 92 616 |
+| Lignes | 94 840 |
 | Colonnes | 49 |
-| Parties | 46 308 |
-| Date de generation | 2026-09-08 |
-| Periode couverte | 2022-01-10 au 2026-09-06 |
+| Parties | 47 420 |
+| Date de generation | 2026-10-08 |
+| Periode couverte | 2022-01-10 au 2026-10-07 |
 | Auteur | Projet final Machine Learning, Master 1, blocs 6 et 8 |
 | Cible | `result`, equilibree a 50.0 % |
-| Entrainement | 76 070 lignes, avant le 2026-01-01 |
-| Test | 16 546 lignes |
+| Entrainement | 76 058 lignes, avant le 2026-01-01 |
+| Test | 18 782 lignes |
 
 ## Sources de donnees
 
@@ -55,54 +55,54 @@ dans le `Pipeline` de la phase 7, ajuste sur le seul jeu d'entrainement.
 
 | Colonne | Type | Unite | Description | Valeurs possibles | Source | Transformation | Feature modele | Manquant (%) |
 |---|---|---|---|---|---|---|---|---|
-| `gameid` | string | sans unite | Identifiant de la partie | 46 308 modalites | Oracle's Elixir | brute | non | 0.0 |
-| `teamid` | object | sans unite | Identifiant de l'équipe, Inconnu si absent | 1 140 modalites | Oracle's Elixir | nettoyée | non | 0.0 |
-| `team_key` | object | sans unite | Clé d'équipe, teamid ou teamname en repli | 1 386 modalites | Dérivée | construite | non | 0.0 |
-| `teamname` | object | sans unite | Nom de l'équipe | 1 366 modalites | Oracle's Elixir | nettoyée | non | 0.0 |
-| `date` | datetime64[ns] | horodatage | Date et heure de la partie | 2022-01-10 a 2026-09-06 | Oracle's Elixir | parsée format explicite | non | 0.0 |
+| `gameid` | string | sans unite | Identifiant de la partie | 47 420 modalites | Oracle's Elixir | brute | non | 0.0 |
+| `teamid` | str | sans unite | Identifiant de l'équipe, Inconnu si absent | 1 143 modalites | Oracle's Elixir | nettoyée | non | 0.0 |
+| `team_key` | str | sans unite | Clé d'équipe, teamid ou teamname en repli | 1 399 modalites | Dérivée | construite | non | 0.0 |
+| `teamname` | str | sans unite | Nom de l'équipe | 1 377 modalites | Oracle's Elixir | nettoyée | non | 0.0 |
+| `date` | datetime64[us] | horodatage | Date et heure de la partie | 2022-01-10 a 2026-10-07 | Oracle's Elixir | parsée format explicite | non | 0.0 |
 | `saison` | int32 | annee | Année civile de la date, porte le split | 2022, 2023, 2024, 2025, 2026 | Dérivée | construite | non | 0.0 |
-| `league` | object | sans unite | Code de la ligue, analyse seulement | 82 modalites | Oracle's Elixir | brute | non | 0.0 |
-| `patch` | string | sans unite | Version du jeu, texte | 107 modalites | Oracle's Elixir | brute | non | 0.0 |
+| `league` | str | sans unite | Code de la ligue, analyse seulement | 84 modalites | Oracle's Elixir | brute | non | 0.0 |
+| `patch` | string | sans unite | Version du jeu, texte | 108 modalites | Oracle's Elixir | brute | non | 0.0 |
 | `result` | int8 | booleen, 1 si victoire | Cible, 1 si l'équipe gagne | 0 ou 1 | Oracle's Elixir | brute | non | 0.0 |
 | `golddiffat15` | float64 | or | Écart d'or à 15 minutes | -1.706e+04 a 1.706e+04 | Oracle's Elixir | brute | oui | 0.0 |
-| `xpdiffat15` | float64 | points d'experience | Écart d'expérience à 15 minutes | -1.156e+04 a 1.156e+04 | Oracle's Elixir | brute | oui | 0.0 |
+| `xpdiffat15` | float64 | points d'experience | Écart d'expérience à 15 minutes | -1.245e+04 a 1.245e+04 | Oracle's Elixir | brute | oui | 0.0 |
 | `csdiffat15` | float64 | sbires | Écart de sbires à 15 minutes | -233 a 233 | Oracle's Elixir | brute | oui | 0.0 |
 | `diff_kills_at15` | float64 | eliminations | killsat15 moins opp_killsat15 | -24 a 24 | Dérivée | calculée | oui | 0.0 |
 | `deathsat15` | float64 | morts | Morts de l'équipe à 15 minutes | 0 a 29 | Oracle's Elixir | brute | oui | 0.0 |
 | `objectifs_precoces` | Int64 | nombre d'objectifs, 0 a 3 | firstblood plus firstdragon plus firstherald, 0 à 3 | 0, 1, 2, 3 | Dérivée | calculée | oui | 0.0 |
-| `compo_nb_tank` | int32 | champions | Champions taggés Tank parmi les 5 | 0, 1, 2, 3, 4 | Data Dragon | construite | oui | 0.0 |
-| `compo_nb_mage` | int32 | champions | Champions taggés Mage parmi les 5 | 0, 1, 2, 3, 4, 5 | Data Dragon | construite | oui | 0.0 |
-| `compo_nb_marksman` | int32 | champions | Champions taggés Marksman parmi les 5 | 0, 1, 2, 3, 4 | Data Dragon | construite | oui | 0.0 |
-| `compo_nb_fighter` | int32 | champions | Champions taggés Fighter parmi les 5 | 0, 1, 2, 3, 4, 5 | Data Dragon | construite | oui | 0.0 |
+| `compo_nb_tank` | int64 | champions | Champions taggés Tank parmi les 5 | 0, 1, 2, 3, 4 | Data Dragon | construite | oui | 0.0 |
+| `compo_nb_mage` | int64 | champions | Champions taggés Mage parmi les 5 | 0, 1, 2, 3, 4, 5 | Data Dragon | construite | oui | 0.0 |
+| `compo_nb_marksman` | int64 | champions | Champions taggés Marksman parmi les 5 | 0, 1, 2, 3, 4 | Data Dragon | construite | oui | 0.0 |
+| `compo_nb_fighter` | int64 | champions | Champions taggés Fighter parmi les 5 | 0, 1, 2, 3, 4, 5 | Data Dragon | construite | oui | 0.0 |
 | `profil_degats` | float64 | part, 0 a 1 | Part de champions AD parmi AD plus AP, 0 à 1 | 0 a 1 | Data Dragon | construite | oui | 0.0 |
-| `forme_equipe_10_derniers` | float64 | taux de victoire, 0 a 1 | Taux de victoire sur les 10 parties précédentes | 0 a 1 | Dérivée | fenêtre expansive, passé seul | oui | 1.5 |
+| `forme_equipe_10_derniers` | float64 | taux de victoire, 0 a 1 | Taux de victoire sur les 10 parties précédentes | 0 a 1 | Dérivée | fenêtre expansive, passé seul | oui | 1.48 |
 | `experience_roster` | int64 | parties | Parties déjà jouées par ce cinq | 0 a 425 | Dérivée | cumcount, passé seul | oui | 0.0 |
-| `winrate_champion_patch` | float64 | taux de victoire, 0 a 1 | Taux de victoire moyen des 5 champions sur le patch, parties antérieures | 0 a 1 | Dérivée | fenêtre expansive, passé seul | oui | 0.46 |
-| `ecart_or_normalise` | float64 | sans unite, ratio | golddiffat15 divisé par la médiane d'or du patch | -0.6697 a 0.6703 | Dérivée | fenêtre expansive, passé seul | oui | 2.3 |
+| `winrate_champion_patch` | float64 | taux de victoire, 0 a 1 | Taux de victoire moyen des 5 champions sur le patch, parties antérieures | 0 a 1 | Dérivée | fenêtre expansive, passé seul | oui | 0.45 |
+| `ecart_or_normalise` | float64 | sans unite, ratio | golddiffat15 divisé par la médiane d'or du patch | -0.6697 a 0.6703 | Dérivée | fenêtre expansive, passé seul | oui | 2.27 |
 | `patch_seq` | int64 | rang dans la saison | Rang du patch dans sa saison | 1 a 24 | Dérivée | construite | oui | 0.0 |
 | `side` | string | sans unite | Côté de la carte, Blue ou Red | Blue, Red | Oracle's Elixir | brute | oui | 0.0 |
-| `region` | object | sans unite | Région du circuit | 9 modalites | Référentiel XLSX | jointure | oui | 0.0 |
-| `tier_ligue` | int64 | niveau, 1 a 3 | Niveau de ligue, 1 à 3 | 1, 2, 3 | Référentiel XLSX | jointure | oui | 0.0 |
+| `region` | str | sans unite | Région du circuit | 9 modalites | Référentiel XLSX | jointure | oui | 0.83 |
+| `tier_ligue` | float64 | niveau, 1 a 3 | Niveau de ligue, 1 à 3 | 1.0, 2.0, 3.0 | Référentiel XLSX | jointure | oui | 0.83 |
 | `playoffs` | Int64 | sans unite | Phase finale ou saison régulière | 0 ou 1 | Oracle's Elixir | brute | oui | 0.0 |
 | `firstblood` | Int64 | sans unite | Premier sang obtenu | 0 ou 1 | Oracle's Elixir | brute | oui | 0.0 |
 | `firstdragon` | Int64 | sans unite | Premier dragon obtenu | 0 ou 1 | Oracle's Elixir | brute | oui | 0.0 |
 | `firstherald` | Int64 | sans unite | Premier héraut obtenu | 0 ou 1 | Oracle's Elixir | brute | oui | 0.0 |
-| `is_playoffs` | int32 | sans unite | Copie entière de playoffs | 0 ou 1 | Dérivée | calculée | non | 0.0 |
+| `is_playoffs` | int64 | sans unite | Copie entière de playoffs | 0 ou 1 | Dérivée | calculée | non | 0.0 |
 | `mois` | int32 | mois civil | Mois de la partie, analyse seulement | 1 a 12 | Dérivée | construite | non | 0.0 |
 | `year` | int64 | etiquette de saison | Étiquette de saison d'Oracle's Elixir, analyse seulement | 2022, 2023, 2024, 2025, 2026, 2027 | Oracle's Elixir | brute | non | 0.0 |
 | `patch_major` | Int64 | version majeure | Partie majeure du patch, analyse seulement | 12, 13, 14, 15, 16 | Dérivée | construite | non | 0.0 |
 | `patch_minor` | Int64 | version mineure | Partie mineure du patch, analyse seulement | 1 a 24 | Dérivée | construite | non | 0.0 |
-| `compo_nb_assassin` | int32 | champions | Champions taggés Assassin parmi les 5 | 0, 1, 2, 3, 4, 5 | Data Dragon | construite | non | 0.0 |
-| `compo_nb_support` | int32 | champions | Champions taggés Support parmi les 5 | 0, 1, 2, 3, 4 | Data Dragon | construite | non | 0.0 |
+| `compo_nb_assassin` | int64 | champions | Champions taggés Assassin parmi les 5 | 0, 1, 2, 3, 4, 5 | Data Dragon | construite | non | 0.0 |
+| `compo_nb_support` | int64 | champions | Champions taggés Support parmi les 5 | 0, 1, 2, 3, 4 | Data Dragon | construite | non | 0.0 |
 | `turretplates` | float64 | plaques | Plaques prises, hors features car l'échelle change en 2026 | 0 a 45 | Oracle's Elixir | brute | non | 0.1 |
 | `flag_ecart_or_extreme` | bool | sans unite | Écart d'or hors bornes IQR | 0 ou 1 | Dérivée | drapeau | non | 0.0 |
-| `confiance` | object | sans unite | Fiabilité du classement de la ligue | haute, moyenne | Référentiel XLSX | jointure | non | 0.0 |
-| `franchisee` | bool | sans unite | Ligue franchisée | 0 ou 1 | Référentiel XLSX | jointure | non | 0.0 |
-| `mediane_or_patch` | float64 | or | Médiane d'or à 15 sur les parties antérieures du patch | 2.313e+04 a 2.703e+04 | Dérivée | fenêtre expansive, passé seul | non | 2.3 |
-| `roster_key` | object | sans unite | Identifiant du cinq de départ | 7 375 modalites | Dérivée | construite | non | 0.0 |
+| `confiance` | str | sans unite | Fiabilité du classement de la ligue | haute, moyenne | Référentiel XLSX | jointure | non | 0.83 |
+| `franchisee` | object | sans unite | Ligue franchisée | 0 ou 1 | Référentiel XLSX | jointure | non | 0.83 |
+| `mediane_or_patch` | float64 | or | Médiane d'or à 15 sur les parties antérieures du patch | 2.313e+04 a 2.721e+04 | Dérivée | fenêtre expansive, passé seul | non | 2.27 |
+| `roster_key` | str | sans unite | Identifiant du cinq de départ | 7 482 modalites | Dérivée | construite | non | 0.0 |
 | `goldat15` | float64 | or | Or de l'équipe à 15 minutes | 1.88e+04 a 3.739e+04 | Oracle's Elixir | brute | non | 0.0 |
 | `opp_goldat15` | float64 | or | Or adverse à 15 minutes | 1.88e+04 a 3.739e+04 | Oracle's Elixir | brute | non | 0.0 |
-| `xpat15` | float64 | points d'experience | Expérience de l'équipe à 15 minutes | 2.036e+04 a 3.861e+04 | Oracle's Elixir | brute | non | 0.0 |
+| `xpat15` | float64 | points d'experience | Expérience de l'équipe à 15 minutes | 2.036e+04 a 3.875e+04 | Oracle's Elixir | brute | non | 0.0 |
 | `csat15` | float64 | sbires | Sbires de l'équipe à 15 minutes | 289 a 665 | Oracle's Elixir | brute | non | 0.0 |
 
 ## Transformations appliquees

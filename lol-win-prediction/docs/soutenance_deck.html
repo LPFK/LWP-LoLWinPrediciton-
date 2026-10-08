@@ -391,7 +391,7 @@ tr.retenu td { color: var(--accent); font-weight: 600; }
         </div>
         <div style="display:flex; flex-direction:column; gap:16px;">
           <div class="stat">
-            <span class="stat-valeur">92 616</span>
+            <span class="stat-valeur">94 840</span>
             <span class="stat-libelle">lignes équipe retenues, deux par partie</span>
           </div>
           <p class="note">
@@ -412,7 +412,7 @@ tr.retenu td { color: var(--accent); font-weight: 600; }
         </div>
         <div>
           <span class="etiquette">Parade 2</span>
-          <p class="note">Test empirique de corrélation. Cinq fuites rattrapées, dont une à 0,760.</p>
+          <p class="note">Test empirique de corrélation. Cinq fuites rattrapées sur l'entraînement, dont une à 0,829.</p>
         </div>
         <div>
           <span class="etiquette">Parade 3</span>
@@ -628,9 +628,9 @@ tr.retenu td { color: var(--accent); font-weight: 600; }
         <div style="display:flex; flex-direction:column; gap:14px;">
           <span class="etiquette">Verdict sur 2026, ouvert une seule fois</span>
           <div class="trio" style="gap:18px;">
-            <div class="stat"><span class="stat-valeur" style="font-size:34px">75,9 %</span><span class="stat-libelle">accuracy</span></div>
-            <div class="stat"><span class="stat-valeur" style="font-size:34px">0,844</span><span class="stat-libelle">ROC AUC</span></div>
-            <div class="stat"><span class="stat-valeur" style="font-size:34px">0,487</span><span class="stat-libelle">log loss</span></div>
+            <div class="stat"><span class="stat-valeur" style="font-size:34px">75,8 %</span><span class="stat-libelle">accuracy</span></div>
+            <div class="stat"><span class="stat-valeur" style="font-size:34px">0,845</span><span class="stat-libelle">ROC AUC</span></div>
+            <div class="stat"><span class="stat-valeur" style="font-size:34px">0,486</span><span class="stat-libelle">log loss</span></div>
           </div>
         </div>
         <div style="display:flex; flex-direction:column; gap:10px;">
@@ -665,7 +665,7 @@ tr.retenu td { color: var(--accent); font-weight: 600; }
           <span class="stat-libelle">ce que vaut le premier sang, dans les mêmes conditions</span>
         </div>
         <div class="stat">
-          <span class="stat-valeur">+1,4 pt</span>
+          <span class="stat-valeur">+1,2 pt</span>
           <span class="stat-libelle">ce que le modèle ajoute à une règle d'une seule ligne</span>
         </div>
       </div>
@@ -675,7 +675,7 @@ tr.retenu td { color: var(--accent); font-weight: 600; }
       </div>
       <p class="note">
         Le troisième chiffre est à mon désavantage, et c'est délibéré. La baseline « le plus
-        riche à 15 gagne » atteint déjà 74,5 %. Ce que le modèle apporte n'est pas l'accuracy,
+        riche à 15 gagne » atteint déjà 74,6 %. Ce que le modèle apporte n'est pas l'accuracy,
         c'est une probabilité calibrée, que la baseline ne sait pas produire.
       </p>
     </div>

@@ -8,17 +8,17 @@
   ],
   "regle_imputation": "Aucune imputation statistique. Suppression, drapeau et valeur constante uniquement. L'imputation aura lieu dans le Pipeline de la phase 7, ajusté sur le seul jeu d'entraînement",
   "etat_initial": {
-    "lignes": 104544,
+    "lignes": 106796,
     "colonnes": 165,
-    "parties": 52272,
-    "valeurs_manquantes": 2782881,
+    "parties": 53398,
+    "valeurs_manquantes": 2819538,
     "doublons_exacts": 0
   },
   "etat_final": {
-    "lignes": 92616,
+    "lignes": 94840,
     "colonnes": 66,
-    "parties": 46308,
-    "valeurs_manquantes": 52703,
+    "parties": 47420,
+    "valeurs_manquantes": 56100,
     "doublons_exacts": 0
   },
   "colonnes_supprimees": {
@@ -145,7 +145,7 @@
       "action": "Aucune suppression nécessaire",
       "lignes_affectees": 0,
       "colonnes_supprimees": 0,
-      "lignes_restantes": 104544,
+      "lignes_restantes": 106796,
       "justification": "Aucun doublon exact ni doublon de clé sur les lignes à clé renseignée, vérifié plutôt que supposé"
     },
     {
@@ -153,9 +153,9 @@
       "colonne": "result",
       "probleme": "Partie sans vainqueur, result à 0 des deux côtés",
       "action": "Suppression des parties entières, par paires",
-      "lignes_affectees": 6,
+      "lignes_affectees": 4,
       "colonnes_supprimees": 0,
-      "lignes_restantes": 104538,
+      "lignes_restantes": 106792,
       "justification": "Cible inexistante, lignes inutilisables en apprentissage supervisé. Suppression par paires pour préserver l'équilibre 50/50"
     },
     {
@@ -165,7 +165,7 @@
       "action": "Suppression de colonnes",
       "lignes_affectees": 0,
       "colonnes_supprimees": 105,
-      "lignes_restantes": 104538,
+      "lignes_restantes": 106792,
       "justification": "Colonnes de fin de partie contenant le résultat, colonnes de ligne joueur vides sur les lignes équipe, et métadonnées sans valeur prédictive"
     },
     {
@@ -175,7 +175,7 @@
       "action": "Conversion en entier nullable Int64, et result en int8",
       "lignes_affectees": 0,
       "colonnes_supprimees": 0,
-      "lignes_restantes": 104538,
+      "lignes_restantes": 106792,
       "justification": "Int64 accepte les valeurs manquantes sans les remplacer, contrairement à int. Aucune imputation n'est donc introduite par la conversion"
     },
     {
@@ -185,7 +185,7 @@
       "action": "Suppression des espaces de bordure, casse laissée intacte",
       "lignes_affectees": 0,
       "colonnes_supprimees": 0,
-      "lignes_restantes": 104538,
+      "lignes_restantes": 106792,
       "justification": "Abaisser la casse fusionnerait des organisations distinctes. teamname ne sera de toute façon jamais une feature, il sert aux variables de forme"
     },
     {
@@ -195,7 +195,7 @@
       "action": "Création de saison à partir de l'année de la date",
       "lignes_affectees": 0,
       "colonnes_supprimees": 0,
-      "lignes_restantes": 104538,
+      "lignes_restantes": 106792,
       "justification": "Garantit un découpage strictement chronologique et n'abandonne aucune ligne hors du train comme du test. year est conservée pour l'analyse"
     },
     {
@@ -205,7 +205,7 @@
       "action": "Jointure du référentiel des ligues, validate=many_to_one",
       "lignes_affectees": 0,
       "colonnes_supprimees": 0,
-      "lignes_restantes": 104538,
+      "lignes_restantes": 106792,
       "justification": "region et tier_ligue sont stables dans le temps et remplacent league comme features. La validation empêche toute duplication silencieuse"
     },
     {
@@ -213,9 +213,9 @@
       "colonne": "goldat15, xpat15, csat15, golddiffat15, xpdiffat15",
       "probleme": "Snapshot à 15 minutes absent",
       "action": "Suppression des parties entières dont une des deux lignes est incomplète",
-      "lignes_affectees": 11922,
+      "lignes_affectees": 11952,
       "colonnes_supprimees": 0,
-      "lignes_restantes": 92616,
+      "lignes_restantes": 94840,
       "justification": "Critère mesuré, et non un nom de ligue. Suppression par paires pour préserver l'équilibre 50/50 de la cible. Aucune imputation"
     },
     {
@@ -225,7 +225,7 @@
       "action": "Valeur constante explicite 'Inconnu'",
       "lignes_affectees": 0,
       "colonnes_supprimees": 0,
-      "lignes_restantes": 92616,
+      "lignes_restantes": 94840,
       "justification": "Le guide interdit l'imputation par le mode. 'Inconnu' conserve l'information de l'absence au lieu d'inventer une modalité plausible"
     },
     {
@@ -235,7 +235,7 @@
       "action": "Drapeau flag_ecart_or_extreme, aucune ligne supprimée ni modifiée",
       "lignes_affectees": 0,
       "colonnes_supprimees": 0,
-      "lignes_restantes": 92616,
+      "lignes_restantes": 94840,
       "justification": "Vraies parties déséquilibrées, pas des erreurs. Les supprimer retirerait les parties les plus prévisibles. La winsorization est interdite à ce stade"
     }
   ],
@@ -270,7 +270,7 @@
     },
     {
       "controle": "region et tier_ligue entièrement renseignées",
-      "statut": "ok"
+      "statut": "a corriger"
     },
     {
       "controle": "Dates toujours au bon type",

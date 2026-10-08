@@ -63,13 +63,13 @@ Les six modules de `src/` :
 | Phase | Notebook | Livrable | Points | Statut |
 |---|---|---|---|---|
 | 0 Cadrage | — | `docs/00_cadrage.md` | 6 | FAIT |
-| 1 Extraction | `01_extraction.ipynb` | 3 sources chargées | 4 | Fait, exécuté de bout en bout sur 104 544 lignes équipe |
+| 1 Extraction | `01_extraction.ipynb` | 3 sources chargées | 4 | Fait, exécuté de bout en bout sur 106 796 lignes équipe |
 | 2 Diagnostic | `02_eda_diagnostique.ipynb` | `docs/rapport_diagnostic.md` | 8 | Fait, 5 dimensions notées, score global 3,4 / 5 |
-| 3 Nettoyage | `03_nettoyage.ipynb` | `docs/rapport_nettoyage.md` | 12 | Fait, 92 616 lignes et 66 colonnes en sortie |
+| 3 Nettoyage | `03_nettoyage.ipynb` | `docs/rapport_nettoyage.md` | 12 | Fait, 94 840 lignes et 66 colonnes en sortie |
 | 4 Transformation | `04_transformation.ipynb` | `docs/data_dictionary.md` | 8 | Fait, 23 features construites, 49 colonnes |
 | 5 EDA analytique | `05_eda_analytique.ipynb` | Réponses aux 5 questions business | 12 | Fait, 5 questions traitées sur 2022-2025 uniquement, `docs/rapport_analytique.md`, 5 figures |
 | 6 Visualisation | `06_visualisation.ipynb` | 7+ figures | 8 | Fait, 9 figures et un tableau de bord, 19 dans `figures/`, `docs/visualisations.md` |
-| 7 Modélisation | `07_modelisation.ipynb` | `models/pipeline_final.joblib` | 25 | Fait, 3 baselines et 3 familles comparées, régression logistique retenue, 75,9 % d'accuracy et 0,844 d'AUC sur 2026 |
+| 7 Modélisation | `07_modelisation.ipynb` | `models/pipeline_final.joblib` | 25 | Fait, 3 baselines et 3 familles comparées, régression logistique retenue, 75,8 % d'accuracy et 0,845 d'AUC sur 2026 |
 | 8 Documentation | `08_export_documentation.ipynb` | Reproductibilité | 5 | Fait, exports en 3 formats, `docs/reproductibilite.md`, `CHANGELOG.md`, `requirements-lock.txt` |
 | 9 Soutenance | `09_soutenance.ipynb` | Support de présentation | 7 | Fait, `docs/soutenance.md` et `docs/soutenance_deck.html`, checklist des 14 livrables vérifiée par le code |
 | IA | — | `docs/journal_ia.md` | 5 | Continu |
@@ -79,11 +79,11 @@ Les six modules de `src/` :
 | Indicateur | Valeur |
 |---|---|
 | Modèle retenu | Régression logistique, `C = 0,05` |
-| Accuracy sur 2026 | 75,9 % |
-| ROC AUC | 0,844 |
-| Log loss | 0,487 |
-| Meilleure baseline | 74,5 %, « le plus riche à 15 gagne » |
-| Gain sur la baseline | +1,4 point, soit 229 lignes sur 16 546 |
+| Accuracy sur 2026 | 75,8 % |
+| ROC AUC | 0,845 |
+| Log loss | 0,486 |
+| Meilleure baseline | 74,6 %, « le plus riche à 15 gagne » |
+| Gain sur la baseline | +1,2 point, soit 231 lignes sur 18 782 |
 
 Le résultat d'analyse principal : à avantage économique égal, le **premier dragon** vaut environ
 **1 030 or**, alors que le **premier sang** et le **premier héraut** ne valent rien de plus que

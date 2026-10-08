@@ -13,8 +13,8 @@ Donnees fournies par Oracle's Elixir (Tim Sevenhuysen, oracleselixir.com).
 | Features | 23 colonnes, toutes connues a la 15e minute |
 | Metrique principale | ROC AUC |
 | Metriques secondaires | accuracy pour la communication, log loss pour la calibration |
-| Entrainement | 76 070 lignes, 2022 a 2025 |
-| Test | 16 546 lignes, saison 2026, ouvert une seule fois |
+| Entrainement | 76 058 lignes, 2022 a 2025 |
+| Test | 18 782 lignes, saison 2026, ouvert une seule fois |
 | Graine aleatoire | 42, fixee partout |
 
 ## Ecarts assumes au squelette du formateur
@@ -31,9 +31,9 @@ Donnees fournies par Oracle's Elixir (Tim Sevenhuysen, oracleselixir.com).
 |---|---|---|---|
 | Naive, classe majoritaire | 0.5 | 0.5 | 0.6931 |
 | Metier 1, le cote bleu gagne | 0.5293 | nan | nan |
-| Metier 2, le plus riche a 15 gagne | 0.7387 | nan | nan |
+| Metier 2, le plus riche a 15 gagne | 0.7385 | nan | nan |
 
-La baseline economique atteint 73.87 % sur l'entrainement. C'est la
+La baseline economique atteint 73.85 % sur l'entrainement. C'est la
 reference qui compte : une regle d'une ligne capture deja l'essentiel du signal, ce que la
 phase 6 avait annonce en montrant que 28 % des lignes presentent plus de 3 000 or d'ecart.
 
@@ -41,47 +41,47 @@ phase 6 avait annonce en montrant que 28 % des lignes presentent plus de 3 000 o
 
 | famille | hyperparametres | mean_test_roc_auc | mean_test_accuracy | log_loss |
 |---|---|---|---|---|
-| LogisticRegression | {'C': 0.05} | 0.8362 | 0.7525 | 0.4959 |
-| RandomForestClassifier | {'max_depth': 10, 'min_samples_leaf': 5} | 0.8337 | 0.7496 | 0.5007 |
-| HistGradientBoostingClassifier | {'learning_rate': 0.05} | 0.8332 | 0.75 | 0.5002 |
+| LogisticRegression | {'C': 0.05} | 0.836 | 0.7526 | 0.4962 |
+| RandomForestClassifier | {'max_depth': 10, 'min_samples_leaf': 5} | 0.8334 | 0.7493 | 0.5011 |
+| HistGradientBoostingClassifier | {'learning_rate': 0.05} | 0.8329 | 0.7497 | 0.5006 |
 
-Modele retenu : **LogisticRegression**, AUC de 0.8362 en validation croisee.
+Modele retenu : **LogisticRegression**, AUC de 0.8360 en validation croisee.
 Ecart d'AUC entre la meilleure et la moins bonne famille : 0.0030.
 
 ## Diagnostic de surapprentissage
 
-Taille d'un pli de validation : 12 678 lignes.
+Taille d'un pli de validation : 12 676 lignes.
 
 | famille | mean_train_roc_auc | mean_test_roc_auc | ecart_auc | lignes_concernees |
 |---|---|---|---|---|
-| LogisticRegression | 0.8391 | 0.8362 | 0.003 | 38.0 |
-| RandomForestClassifier | 0.8797 | 0.8337 | 0.046 | 584.0 |
-| HistGradientBoostingClassifier | 0.8632 | 0.8332 | 0.03 | 381.0 |
+| LogisticRegression | 0.8389 | 0.836 | 0.003 | 38.0 |
+| RandomForestClassifier | 0.8796 | 0.8334 | 0.0463 | 587.0 |
+| HistGradientBoostingClassifier | 0.8626 | 0.8329 | 0.0297 | 376.0 |
 
 ## Verdict final, saison 2026
 
 | modele | accuracy | roc_auc | log_loss |
 |---|---|---|---|
 | Baseline naive | 0.5 | 0.5 | 0.6931 |
-| Baseline cote bleu | 0.5392 | nan | nan |
-| Baseline plus riche a 15 | 0.7448 | nan | nan |
-| Modele final, LogisticRegression | 0.7587 | 0.8438 | 0.4874 |
+| Baseline cote bleu | 0.5354 | nan | nan |
+| Baseline plus riche a 15 | 0.7457 | nan | nan |
+| Modele final, LogisticRegression | 0.758 | 0.8447 | 0.4856 |
 
-Gain du modele sur la baseline economique : +1.38 points d'accuracy, soit
-229 lignes mieux classees sur 16 546.
+Gain du modele sur la baseline economique : +1.23 points d'accuracy, soit
+231 lignes mieux classees sur 18 782.
 
-Ecart entrainement / test : -0.0072 d'AUC et
--0.0055 d'accuracy, soit
-91 lignes du jeu de test.
+Ecart entrainement / test : -0.0083 d'AUC et
+-0.0050 d'accuracy, soit
+93 lignes du jeu de test.
 
 ## Comparaison des protocoles de split
 
 | protocole | accuracy | roc_auc |
 |---|---|---|
-| Chronologique, test 2026 | 0.7587 | 0.8438 |
-| Aleatoire, meme taille | 0.7511 | 0.8353 |
+| Chronologique, test 2026 | 0.758 | 0.8447 |
+| Aleatoire, meme taille | 0.7559 | 0.84 |
 
-Le split aleatoire affiche -0.85 points d'AUC par rapport au split
+Le split aleatoire affiche -0.47 points d'AUC par rapport au split
 chronologique, soit l'inverse de ce que la phase 0 anticipait.
 
 L'explication n'est pas que le split aleatoire serait vertueux, mais que les deux protocoles
@@ -101,16 +101,16 @@ absolue :
 
 | feature | coefficient |
 |---|---|
-| num__golddiffat15 | 0.6937 |
-| bool__firstdragon | 0.3667 |
-| num__xpdiffat15 | 0.3138 |
-| num__ecart_or_normalise | 0.2875 |
-| num__csdiffat15 | 0.2686 |
-| num__forme_equipe_10_derniers | 0.2436 |
-| bool__firstblood | -0.2139 |
-| num__diff_kills_at15 | 0.2135 |
-| num__objectifs_precoces | 0.2096 |
-| cat__region_International | -0.1618 |
+| num__golddiffat15 | 0.7016 |
+| bool__firstdragon | 0.3678 |
+| num__xpdiffat15 | 0.3115 |
+| num__ecart_or_normalise | 0.2794 |
+| num__csdiffat15 | 0.2682 |
+| num__forme_equipe_10_derniers | 0.2434 |
+| bool__firstblood | -0.2136 |
+| num__diff_kills_at15 | 0.2134 |
+| num__objectifs_precoces | 0.2095 |
+| cat__region_International | -0.1627 |
 
 Prediction laissee par la phase 6, `firstdragon` devant `firstblood` : **confirmee**.
 `firstdragon` au rang 2, `firstblood` au rang 7.
@@ -121,25 +121,25 @@ Performance par region, groupes de plus de 300 lignes :
 
 | region | lignes | accuracy | roc_auc | log_loss |
 |---|---|---|---|---|
-| Asie-Pacifique | 1816 | 0.7819 | 0.8771 | 0.4351 |
-| Turquie | 408 | 0.7843 | 0.8757 | 0.4406 |
-| Europe | 6728 | 0.7626 | 0.8479 | 0.4826 |
-| Coree | 2486 | 0.7574 | 0.8377 | 0.4981 |
-| Moyen-Orient | 660 | 0.7212 | 0.8338 | 0.4922 |
-| Ameriques | 2700 | 0.753 | 0.8336 | 0.5024 |
-| Chine | 1052 | 0.7367 | 0.8139 | 0.5335 |
-| International | 696 | 0.7399 | 0.8116 | 0.5276 |
+| Asie-Pacifique | 1768 | 0.7817 | 0.8752 | 0.4387 |
+| Turquie | 416 | 0.7788 | 0.8695 | 0.4495 |
+| Europe | 7828 | 0.7587 | 0.8464 | 0.484 |
+| Coree | 2938 | 0.7607 | 0.8458 | 0.4858 |
+| Moyen-Orient | 700 | 0.7243 | 0.8395 | 0.4839 |
+| Ameriques | 2964 | 0.7534 | 0.8331 | 0.5022 |
+| Chine | 1084 | 0.7371 | 0.8156 | 0.5309 |
+| International | 720 | 0.7347 | 0.8037 | 0.5381 |
 
 Ecart d'AUC entre la meilleure et la moins bonne region :
-0.0655.
+0.0714.
 
 Performance par niveau de ligue :
 
 | tier_ligue | lignes | accuracy | roc_auc | log_loss |
 |---|---|---|---|---|
-| 2 | 8134 | 0.7729 | 0.8621 | 0.4598 |
-| 3 | 3944 | 0.7632 | 0.8432 | 0.4915 |
-| 1 | 4468 | 0.7287 | 0.8079 | 0.5341 |
+| 2.0 | 9210 | 0.7706 | 0.8607 | 0.4615 |
+| 3.0 | 4528 | 0.7613 | 0.8443 | 0.4892 |
+| 1.0 | 4680 | 0.7274 | 0.807 | 0.5348 |
 
 Deux constats a signaler.
 
